@@ -4,8 +4,7 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const yes = (b) => (b ? '<span class="yes" aria-label="yes">✓</span>' : '<span class="no" aria-label="no">–</span>');
 
-  fetch("data/items.json", { cache: "no-store" })
-    .then((r) => r.json())
+  (window.FZ_DATA ? Promise.resolve(window.FZ_DATA) : fetch("data/items.json", { cache: "no-store" }).then((r) => r.json()))
     .then((d) => {
       const zones = {};
       d.zones.forEach((z) => { zones[z.id] = z; });

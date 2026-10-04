@@ -17,8 +17,6 @@ on:
 permissions:
   contents: write
   issues: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: daily-watch
@@ -90,16 +88,7 @@ jobs:
             gh issue close "$existing" --comment "All sources healthy again as of $(date -u +%Y-%m-%d)."
           fi
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-
-  deploy:
-    needs: update
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish docs/ to the gh-pages branch (served by GitHub Pages)
+        run: |
+          git fetch origin main
+          git push --force origin "$(git subtree split --prefix docs origin/main)":refs/heads/gh-pages

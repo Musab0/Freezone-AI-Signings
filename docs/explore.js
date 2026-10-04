@@ -140,8 +140,7 @@
     });
   }
 
-  fetch("data/items.json", { cache: "no-store" })
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  (window.FZ_DATA ? Promise.resolve(window.FZ_DATA) : fetch("data/items.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }))
     .then((data) => {
       DATA = data;
       data.zones.forEach((z) => { ZONES[z.id] = z; });
