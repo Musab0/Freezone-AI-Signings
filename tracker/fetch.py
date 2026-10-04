@@ -1,0 +1,134 @@
+"""Pull candidate news items from news-search RSS and direct feeds (stdlib only)."""
+
+import html
+import logging
+import re
+import time
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+
+from . import config
+
+log = logging.getLogger(__name__)
+
+USER_AGENT = "Mozilla/5.0 (compatible; FreezoneAITracker/1.0; +https://github.com/musab0/freezone-ai-signings)"
+TAG_RE = re.compile(r"<[^>]+>")
+
+
+def build_queries():
+    """One AI query per zone; leaders also get a deal-focused query."""
+    queries = []
+    for zone in config.ZONES:
+        names = " OR ".join(f'"{a}"' for a in zone["aliases"][:3])
+        queries.append((zone["id"], f"({names}) {config.AI_QUERY}"))
+        if zone["tier"] == "leader":
+            queries.append((zone["id"], f"({names}) {config.AI_QUERY} {config.DEAL_QUERY}"))
+    return queries
+
+
+def _get(url, retries=2):
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/rss+xml, */*"})
+    for attempt in range(retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                return resp.read()
+        except Exception as exc:  # network errors are expected for some feeds; never fatal
+            if attempt == retries:
+                log.warning("fetch failed %s: %s", url[:120], exc)
+                return None
+            time.sleep(2 ** attempt)
+
+
+def clean_text(value):
+    if not value:
+        return ""
+    return re.sub(r"\s+", " ", html.unescape(TAG_RE.sub(" ", value))).strip()
+
+
+def _parse_date(value):
+    if not value:
+        return None
+    value = value.strip()
+    try:
+        dt = parsedate_to_datetime(value)
+    except (TypeError, ValueError):
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def _local(tag):
+    return tag.rsplit("}", 1)[-1]
+
+
+def parse_feed(payload, origin):
+    """Parse RSS 2.0 or Atom into plain dicts."""
+    try:
+        root = ET.fromstring(payload)
+    except ET.ParseError as exc:
+        log.warning("bad XML from %s: %s", origin, exc)
+        return []
+    items = []
+    for node in root.iter():
+        if _local(node.tag) not in ("item", "entry"):
+            continue
+        fields = {}
+        for child in node:
+            name = _local(child.tag)
+            if name == "link" and child.get("href"):
+                fields.setdefault("link", child.get("href"))
+            elif name == "source":
+                fields["source"] = clean_text(child.text)
+                fields.setdefault("source_url", child.get("url"))
+            elif child.text and name not in fields:
+                fields[name] = child.text
+        title = clean_text(fields.get("title"))
+        link = (fields.get("link") or "").strip()
+        if not title or not link:
+            continue
+        published = _parse_date(fields.get("pubDate") or fields.get("published") or fields.get("updated")
+                                or fields.get("date"))
+        items.append({
+            "title": title,
+            "url": link,
+            "summary": clean_text(fields.get("description") or fields.get("summary") or fields.get("encoded"))[:600],
+            "source": fields.get("source") or _source_from_url(fields.get("source_url") or link),
+            "published": published.isoformat() if published else None,
+            "origin": origin,
+        })
+    return items
+
+
+def _source_from_url(url):
+    host = urllib.parse.urlparse(url or "").netloc.lower()
+    return host[4:] if host.startswith("www.") else host
+
+
+def fetch_all(lookback_days=config.LOOKBACK_DAYS):
+    jobs = []
+    for zone_id, query in build_queries():
+        for name, template in config.SEARCH_FEEDS.items():
+            q = f"{query} when:{lookback_days}d" if name == "google_news" else query
+            jobs.append((f"{name}:{zone_id}", template.format(q=urllib.parse.quote(q))))
+    for url in config.DIRECT_FEEDS:
+        jobs.append((f"feed:{_source_from_url(url)}", url))
+
+    def run(job):
+        origin, url = job
+        payload = _get(url)
+        return parse_feed(payload, origin) if payload else []
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(run, jobs))
+    ok = sum(1 for r in results if r)
+    items = [item for batch in results for item in batch]
+    log.info("fetched %d raw items from %d/%d feeds", len(items), ok, len(jobs))
+    return items, {"feeds_total": len(jobs), "feeds_with_items": ok}

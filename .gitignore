@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+# Generated at build time from data/items.json
+site/data/
+site/feed.xml

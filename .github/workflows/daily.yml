@@ -1,0 +1,82 @@
+name: Daily free zone AI watch
+
+on:
+  schedule:
+    - cron: "7 4 * * *"   # 08:07 Dubai time, every day
+  workflow_dispatch:
+    inputs:
+      lookback:
+        description: "Days to look back (use 30 for a first backfill)"
+        required: false
+        default: "3"
+  push:
+    branches: [main]
+    paths: ["site/**", "tracker/**", ".github/workflows/daily.yml"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-watch
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install optional dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Fetch, classify and publish
+        if: github.event_name != 'push'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          DIGEST_TO: ${{ vars.DIGEST_TO }}
+        run: python -m tracker.run --lookback "${{ github.event.inputs.lookback || '3' }}"
+
+      - name: Rebuild site from stored data
+        if: github.event_name == 'push'
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: python -m tracker.publish_only
+
+      - name: Commit updated data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "freezone-ai-watch[bot]"
+          git config user.email "freezone-ai-watch@users.noreply.github.com"
+          git add data digests
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Daily update $(date -u +%Y-%m-%d)"
+          git push
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
