@@ -9,7 +9,9 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const age = (iso) => Date.now() - new Date(iso).getTime();
   const isSelfOnly = (it) => it.zones.every((z) => ZONES[z] && ZONES[z].self);
-  const fmtDate = (iso) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  const fmtDate = (iso, approx) => approx
+    ? "≈ " + new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric" })
+    : new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
   // Filters persist per viewer; storage can be unavailable, so never depend on it.
   function loadPrefs() {
@@ -26,7 +28,7 @@
     if (state.leaders && !it.zones.some((z) => LEADERS.has(z))) return false;
     if (!ignoreCats && state.cats.size && !state.cats.has(it.category)) return false;
     if (state.q) {
-      const hay = [it.title, it.source, it.summary, it.ai_summary, it.dmcc_angle, (it.players || []).join(" "),
+      const hay = [it.title, it.source, it.summary, it.ai_summary, (it.players || []).join(" "),
         (it.counterparties || []).join(" "), it.zones.map((z) => ZONES[z] ? ZONES[z].name : z).join(" ")].join(" ").toLowerCase();
       if (!state.q.toLowerCase().split(/\s+/).every((t) => hay.includes(t))) return false;
     }
@@ -39,7 +41,7 @@
     const m30 = within(30);
     const k = [
       [within(1).length, "new in last 24h"],
-      [within(7).length, "competitor items, 7 days"],
+      [within(7).length, "AI items, last 7 days"],
       [m30.filter((i) => i.zones.includes("difc")).length, "DIFC items, 30 days"],
       [m30.filter((i) => i.zones.includes("adgm")).length, "ADGM items, 30 days"],
     ];
@@ -59,7 +61,7 @@
         <span class="zn">${esc(ZONES[z].name)}</span>
         <span class="track"><span class="fill" style="width:${Math.max(3, (n / max) * 100)}%"></span></span>
         <span class="n">${n}</span>
-      </button>`).join("") : `<p class="hint">No competitor items in the last 30 days yet.</p>`;
+      </button>`).join("") : `<p class="hint">No AI items in the last 30 days yet.</p>`;
   }
 
   function renderCats() {
@@ -83,13 +85,12 @@
       const partners = (i.counterparties && i.counterparties.length ? i.counterparties : i.players || []).slice(0, 4);
       const also = i.also_in && i.also_in.length ? ` · also in ${esc(i.also_in.slice(0, 3).join(", "))}` : "";
       return `<li class="it">
-        <div class="date">${fmtDate(i.published)}<br><span class="sig ${i.score >= 7 ? "hi" : ""}" title="Signal score">signal ${i.score}</span></div>
+        <div class="date">${fmtDate(i.published, i.date_approx)}<br><span class="sig ${i.score >= 7 ? "hi" : ""}" title="Signal score">signal ${i.score}</span></div>
         <div>
           <div class="tags">${zoneTags}<span class="tag cat">${esc(i.category)}</span>${i.verified ? '<span class="tag ver" title="Headline, date and facts checked on the source page">verified</span>' : ""}</div>
           <h3><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)}</a></h3>
           <div class="src">${esc(i.source)}${also}${partners.length ? " · with " + esc(partners.join(", ")) : ""}</div>
           ${i.ai_summary ? `<p>${esc(i.ai_summary)}</p>` : ""}
-          ${i.dmcc_angle ? `<p class="angle">DMCC angle: ${esc(i.dmcc_angle)}</p>` : ""}
         </div>
       </li>`;
     }).join("");
