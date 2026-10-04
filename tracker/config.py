@@ -3,64 +3,95 @@
 Edit this file to add a zone, an alias, or a keyword. Everything else picks it up.
 """
 
-# tier: "leader" zones get extra, deal-specific queries and a higher signal weight.
-# self: DMCC itself - tracked as a benchmark, hidden by default on the dashboard.
-# parent: the zone an ecosystem/brand belongs to (e.g. Hub71 sits in ADGM).
+# Every UAE free zone (56, plus the Hub71 ecosystem), by emirate. Sources: UAE Federal Tax Authority designated-zone list,
+# Wikipedia "List of free-trade zones in the UAE" (Aug 2026 revision) and the zones' own sites.
+# tier: "leader" zones get extra, deal-specific news queries. self: DMCC itself.
+# parent: the zone an ecosystem brand belongs to (Hub71 -> ADGM). group: operating authority.
+def _z(id, name, emirate, aliases, tier="other", group=None, **extra):
+    return {"id": id, "name": name, "emirate": emirate, "aliases": aliases, "tier": tier, "group": group or name, **extra}
+
+
 ZONES = [
-    {"id": "difc", "name": "DIFC", "emirate": "Dubai", "tier": "leader",
-     "aliases": ["DIFC", "Dubai International Financial Centre", "Dubai International Financial Center",
-                 "DFSA", "Dubai AI Campus", "DIFC Innovation Hub"]},
-    {"id": "adgm", "name": "ADGM", "emirate": "Abu Dhabi", "tier": "leader",
-     "aliases": ["ADGM", "Abu Dhabi Global Market", "FSRA", "ADGM Academy"]},
-    {"id": "hub71", "name": "Hub71", "emirate": "Abu Dhabi", "tier": "major", "parent": "adgm",
-     "aliases": ["Hub71"]},
-    {"id": "dmcc", "name": "DMCC", "emirate": "Dubai", "tier": "major", "self": True,
-     "aliases": ["DMCC", "Dubai Multi Commodities Centre", "DMCC Crypto Centre", "DMCC AI Centre",
-                 "Uptown Dubai"]},
-    {"id": "tecom", "name": "TECOM (DIC / DMC / DSP / d3 / DKP)", "emirate": "Dubai", "tier": "major",
-     "aliases": ["Dubai Internet City", "Dubai Media City", "Dubai Science Park", "Dubai Design District",
-                 "Dubai Knowledge Park", "Dubai Studio City", "Dubai Production City", "Dubai Outsource City",
-                 "Dubai Industrial City", "TECOM Group", "in5"]},
-    {"id": "diez", "name": "DIEZ (DSO / DAFZ / Dubai CommerCity)", "emirate": "Dubai", "tier": "major",
-     "aliases": ["Dubai Silicon Oasis", "DSO", "Dubai Airport Freezone", "Dubai Airport Free Zone", "DAFZ",
-                 "Dubai CommerCity", "Dubai Integrated Economic Zones", "DIEZ", "Dtec", "District IO"]},
-    {"id": "dpworld", "name": "JAFZA / Dubai South", "emirate": "Dubai", "tier": "major",
-     "aliases": ["JAFZA", "Jebel Ali Free Zone", "Dubai South", "Dubai Logistics District"]},
-    {"id": "dwtc", "name": "DWTC Free Zone", "emirate": "Dubai", "tier": "other",
-     "aliases": ["DWTC Free Zone", "Dubai World Trade Centre Free Zone", "Dubai World Trade Centre Authority"]},
-    {"id": "dhcc", "name": "Dubai Healthcare City", "emirate": "Dubai", "tier": "other",
-     "aliases": ["Dubai Healthcare City", "DHCC", "DHCR"]},
-    {"id": "meydan", "name": "Meydan Free Zone", "emirate": "Dubai", "tier": "other",
-     "aliases": ["Meydan Free Zone"]},
-    {"id": "ifza", "name": "IFZA", "emirate": "Dubai", "tier": "other",
-     "aliases": ["IFZA", "International Free Zone Authority"]},
-    {"id": "kezad", "name": "KEZAD / AD Ports", "emirate": "Abu Dhabi", "tier": "major",
-     "aliases": ["KEZAD", "Khalifa Economic Zones", "Abu Dhabi Airport Free Zone", "ADAFZ"]},
-    {"id": "masdar", "name": "Masdar City Free Zone", "emirate": "Abu Dhabi", "tier": "major",
-     "aliases": ["Masdar City Free Zone", "Masdar City"]},
-    {"id": "twofour54", "name": "twofour54", "emirate": "Abu Dhabi", "tier": "other",
-     "aliases": ["twofour54", "Yas Creative Hub"]},
-    {"id": "rakez", "name": "RAKEZ", "emirate": "Ras Al Khaimah", "tier": "major",
-     "aliases": ["RAKEZ", "Ras Al Khaimah Economic Zone"]},
-    {"id": "rakinc", "name": "RAK Innovation City (ex-RAK DAO)", "emirate": "Ras Al Khaimah", "tier": "major",
-     "aliases": ["RAK Innovation City", "RAK INC", "RAK DAO", "RAK Digital Assets Oasis"]},
-    {"id": "sharjah", "name": "Sharjah zones (SRTIP / SPC / SAIF / Shams)", "emirate": "Sharjah", "tier": "other",
-     "aliases": ["SRTIP", "Sharjah Research, Technology and Innovation Park",
-                 "Sharjah Research Technology and Innovation Park", "Sharjah Publishing City", "SPC Free Zone",
-                 "SAIF Zone", "Sharjah Airport International Free Zone", "Shams Free Zone",
-                 "Sharjah Media City", "Hamriyah Free Zone"]},
-    {"id": "ajman", "name": "Ajman Free Zone", "emirate": "Ajman", "tier": "other",
-     "aliases": ["Ajman Free Zone", "AFZ Ajman"]},
-    {"id": "fujairah", "name": "Fujairah zones", "emirate": "Fujairah", "tier": "other",
-     "aliases": ["Fujairah Creative City", "Fujairah Free Zone"]},
-    {"id": "uaq", "name": "UAQ Free Trade Zone", "emirate": "Umm Al Quwain", "tier": "other",
-     "aliases": ["Umm Al Quwain Free Trade Zone", "UAQ FTZ", "UAQ Free Trade Zone"]},
+    # ---------------- Dubai
+    _z("difc", "DIFC", "Dubai", ["DIFC", "Dubai International Financial Centre", "Dubai International Financial Center",
+                                 "DFSA", "Dubai AI Campus", "DIFC Innovation Hub", "DIFC AI Campus"], "leader"),
+    _z("dmcc", "DMCC", "Dubai", ["DMCC", "Dubai Multi Commodities Centre", "DMCC AI Centre", "DMCC Crypto Centre",
+                                 "Jumeirah Lakes Towers Free Zone", "Uptown Dubai"], "major", self=True),
+    _z("dic", "Dubai Internet City", "Dubai", ["Dubai Internet City"], "major", "TECOM Group"),
+    _z("dmc", "Dubai Media City", "Dubai", ["Dubai Media City"], "major", "TECOM Group"),
+    _z("dsp", "Dubai Science Park", "Dubai", ["Dubai Science Park", "DuBiotech", "Dubai Biotechnology and Research Park"], "major", "TECOM Group"),
+    _z("d3", "Dubai Design District", "Dubai", ["Dubai Design District"], "other", "TECOM Group"),
+    _z("dkp", "Dubai Knowledge Park", "Dubai", ["Dubai Knowledge Park", "Dubai Knowledge Village", "in5"], "other", "TECOM Group"),
+    _z("diac", "Dubai International Academic City", "Dubai", ["Dubai International Academic City"], "other", "TECOM Group"),
+    _z("dstudio", "Dubai Studio City", "Dubai", ["Dubai Studio City"], "other", "TECOM Group"),
+    _z("dprod", "Dubai Production City", "Dubai", ["Dubai Production City", "International Media Production Zone"], "other", "TECOM Group"),
+    _z("dout", "Dubai Outsource City", "Dubai", ["Dubai Outsource City", "Dubai Outsource Zone"], "other", "TECOM Group"),
+    _z("dind", "Dubai Industrial City", "Dubai", ["Dubai Industrial City"], "other", "TECOM Group"),
+    _z("dafz", "Dubai Airport Freezone", "Dubai", ["Dubai Airport Freezone", "Dubai Airport Free Zone", "DAFZ", "DAFZA",
+                                                    "Dubai Flower Centre"], "major", "DIEZ"),
+    _z("dso", "Dubai Silicon Oasis", "Dubai", ["Dubai Silicon Oasis", "DSO", "District IO", "Dubai Digital Park", "Dtec"], "major", "DIEZ"),
+    _z("dcc", "Dubai CommerCity", "Dubai", ["Dubai CommerCity", "Dubai Integrated Economic Zones", "DIEZ"], "major", "DIEZ"),
+    _z("jafza", "Jebel Ali Free Zone (JAFZA)", "Dubai", ["JAFZA", "Jafza", "Jebel Ali Free Zone"], "major", "DP World"),
+    _z("dubaisouth", "Dubai South", "Dubai", ["Dubai South", "Dubai World Central", "Dubai Logistics District",
+                                               "Dubai Logistics City", "Dubai Aviation City"], "major", "Dubai Aviation City Corporation"),
+    _z("dwtc", "DWTC Free Zone", "Dubai", ["DWTC Free Zone", "Dubai World Trade Centre Free Zone",
+                                            "Dubai World Trade Centre Authority", "Dubai World Trade Centre"], "other"),
+    _z("dhcc", "Dubai Healthcare City", "Dubai", ["Dubai Healthcare City", "DHCC", "Dubai Healthcare City Authority"], "other"),
+    _z("meydan", "Meydan Free Zone", "Dubai", ["Meydan Free Zone"], "other"),
+    _z("ifza", "IFZA", "Dubai", ["IFZA", "International Free Zone Authority"], "other"),
+    _z("expo", "Expo City Dubai", "Dubai", ["Expo City Dubai", "Expo City Dubai Authority"], "other"),
+    _z("dmaritime", "Dubai Maritime City", "Dubai", ["Dubai Maritime City"], "other"),
+    _z("ihc", "International Humanitarian City", "Dubai", ["International Humanitarian City"], "other"),
+    _z("dgdp", "Dubai Gold & Diamond Park", "Dubai", ["Dubai Gold and Diamond Park", "Gold & Diamond Park"], "other"),
+    _z("ducamz", "Dubai Cars & Automotive Zone", "Dubai", ["DUCAMZ", "Dubai Car and Automotive City", "Dubai Auto Zone"], "other"),
+    _z("dtechno", "Dubai Techno Park", "Dubai", ["Dubai Techno Park", "Technopark Dubai"], "other"),
+    _z("dtextile", "Dubai Textile Village", "Dubai", ["Dubai Textile Village"], "other"),
+    _z("duqe", "DUQE Free Zone", "Dubai", ["DUQE Free Zone", "DUQE"], "other"),
+    # ---------------- Abu Dhabi
+    _z("adgm", "ADGM", "Abu Dhabi", ["ADGM", "Abu Dhabi Global Market", "FSRA", "ADGM Academy"], "leader"),
+    _z("hub71", "Hub71", "Abu Dhabi", ["Hub71"], "major", "ADGM", parent="adgm"),
+    _z("kezad", "KEZAD", "Abu Dhabi", ["KEZAD", "Khalifa Economic Zones", "KIZAD", "Khalifa Industrial Zone"], "major", "AD Ports Group"),
+    _z("kpftz", "Khalifa Port Free Trade Zone", "Abu Dhabi", ["Khalifa Port Free Trade Zone", "Free Trade Zone of Khalifa Port"], "other", "AD Ports Group"),
+    _z("masdar", "Masdar City Free Zone", "Abu Dhabi", ["Masdar City Free Zone", "Masdar City", "MCFZ"], "major"),
+    _z("twofour54", "twofour54", "Abu Dhabi", ["twofour54", "Yas Creative Hub", "Abu Dhabi Media Zone"], "other"),
+    _z("adafz", "Abu Dhabi Airports Free Zone", "Abu Dhabi", ["Abu Dhabi Airport Free Zone", "Abu Dhabi Airports Free Zone",
+                                                               "ADAFZ", "Zayed International Airport Free Zone"], "other"),
+    _z("alain", "Al Ain International Airport Free Zone", "Abu Dhabi", ["Al Ain International Airport Free Zone"], "other"),
+    _z("icad", "Industrial City of Abu Dhabi", "Abu Dhabi", ["Industrial City of Abu Dhabi", "ICAD"], "other"),
+    _z("zonescorp", "ZonesCorp", "Abu Dhabi", ["ZonesCorp", "Higher Corporation for Specialized Economic Zones"], "other"),
+    # ---------------- Sharjah
+    _z("saif", "SAIF Zone", "Sharjah", ["SAIF Zone", "Sharjah Airport International Free Zone"], "major"),
+    _z("hfz", "Hamriyah Free Zone", "Sharjah", ["Hamriyah Free Zone", "HFZA"], "other"),
+    _z("spc", "Sharjah Publishing City Free Zone", "Sharjah", ["Sharjah Publishing City", "SPC Free Zone"], "major"),
+    _z("shams", "Sharjah Media City (Shams)", "Sharjah", ["Sharjah Media City", "Shams Free Zone", "Shams AI Club"], "other"),
+    _z("srtip", "Sharjah Research, Technology and Innovation Park", "Sharjah",
+       ["SRTIP", "SRTI Park", "Sharjah Research, Technology and Innovation Park",
+        "Sharjah Research Technology and Innovation Park", "Sharjah Innovation Park"], "other"),
+    _z("shcc", "Sharjah Healthcare City", "Sharjah", ["Sharjah Healthcare City"], "other"),
+    _z("comtech", "Sharjah Communication Technologies Free Zone", "Sharjah",
+       ["Sharjah Communication Technologies Free Zone", "COMTECH Free Zone"], "other"),
+    _z("usartc", "U.S.A. Regional Trade Center Free Zone", "Sharjah", ["USARTC", "U.S.A. Regional Trade Center"], "other"),
+    # ---------------- Ajman
+    _z("afz", "Ajman Free Zone", "Ajman", ["Ajman Free Zone", "AFZA"], "other"),
+    _z("amc", "Ajman Media City Free Zone", "Ajman", ["Ajman Media City"], "other"),
+    _z("ancfz", "Ajman NuVentures Centre Free Zone", "Ajman", ["Ajman NuVentures", "ANCFZ"], "other"),
+    # ---------------- Ras Al Khaimah
+    _z("rakez", "RAKEZ", "Ras Al Khaimah", ["RAKEZ", "Ras Al Khaimah Economic Zone", "RAK Free Trade Zone"], "major"),
+    _z("rakinc", "Innovation City (RAK)", "Ras Al Khaimah", ["Innovation City Ras Al Khaimah", "RAK Innovation City",
+                                                             "RAK DAO", "RAK Digital Assets Oasis", "Innovation City"], "major"),
+    _z("rakmc", "RAK Maritime City Free Zone", "Ras Al Khaimah", ["RAK Maritime City"], "other"),
+    # ---------------- Fujairah
+    _z("ffz", "Fujairah Free Zone", "Fujairah", ["Fujairah Free Zone"], "other"),
+    _z("fcc", "Fujairah Creative City", "Fujairah", ["Fujairah Creative City", "Creative City Fujairah"], "other"),
+    _z("foiz", "Fujairah Oil Industry Zone", "Fujairah", ["Fujairah Oil Industry Zone", "FOIZ"], "other"),
+    # ---------------- Umm Al Quwain
+    _z("uaqftz", "UAQ Free Trade Zone", "Umm Al Quwain", ["UAQ Free Trade Zone", "Umm Al Quwain Free Trade Zone", "UAQ FTZ"], "other"),
 ]
 
 # Short aliases that are also ordinary words or ambiguous acronyms need word boundaries
 # and are only trusted when the article also mentions the UAE.
-AMBIGUOUS_ALIASES = {"DSO", "DAFZ", "SPC Free Zone", "FSRA", "DFSA", "in5", "DIEZ", "Dtec", "RAK INC",
-                     "Masdar City", "DHCR", "AFZ Ajman"}
+AMBIGUOUS_ALIASES = {"DSO", "DAFZ", "FSRA", "DFSA", "in5", "DIEZ", "Dtec", "Masdar City", "Innovation City", "ICAD",
+                     "DUQE", "FOIZ", "AFZA", "MCFZ", "Dubai World Trade Centre"}
 UAE_CONTEXT = r"\b(UAE|Dubai|Abu Dhabi|Sharjah|Ras Al Khaimah|Ajman|Fujairah|Emirat\w*)\b"
 
 AI_TERMS = [

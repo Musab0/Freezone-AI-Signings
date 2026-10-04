@@ -44,7 +44,7 @@ class ClassifyTest(unittest.TestCase):
         self.assertEqual(c["category"], "Investment & Funding")
         self.assertEqual(c["zones"], ["hub71", "adgm"])
         g = self.by_url["https://example.com/g"]
-        self.assertEqual(g["zones"], ["diez"])
+        self.assertEqual(g["zones"], ["dso"])
         self.assertEqual(g["category"], "Adoption & Deployment")
 
     def test_leader_deal_outscores_own_zone_item(self):
@@ -67,7 +67,7 @@ class StoreTest(unittest.TestCase):
         now = datetime(2026, 10, 4, tzinfo=timezone.utc)
         data = {"items": [], "rejected": [], "runs": []}
         text = publish.render_digest(store.merge(data, items, now), now)
-        self.assertIn("4 new competitor items", text)
+        self.assertIn("4 new AI items from other free zones", text)
         self.assertIn("DMCC's own coverage", text)
 
 

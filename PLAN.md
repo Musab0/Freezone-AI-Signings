@@ -75,3 +75,14 @@ _Prepared 4 Oct 2026._
 | robots.txt compliance | Implemented and tested (it was claimed but not implemented before) |
 | Hosting | Static `docs/` folder published to the `gh-pages` branch and served by GitHub Pages at https://musab0.github.io/Freezone-AI-Signings/ |
 | Tests | 36 passing |
+
+## 7. Update (4 Oct 2026): all free zones, descriptive briefing
+
+Following feedback, the briefing now describes what the free zones announced and makes no judgement about where DMCC stands against them.
+
+| Item | Status |
+|---|---|
+| Neutral briefing | Done. The "What it means for DMCC" recommendations, the per-item "DMCC angle" and the competitor framing are removed. The landing page now shows: what the free zones announced, AI announcements per month, types of announcement, latest by zone, major announcements, and free zones covered. |
+| All UAE free zones | Done. 56 free zones across all 7 emirates (plus the Hub71 ecosystem) are registered in `tracker/config.py`, and each is covered by news search. The briefing lists each zone with its count of AI announcements. |
+| Data from January 2026 | Done. 32 hand-verified AI announcements, Jan–Sep 2026, by 14 zones. Many smaller zones (Ajman, Fujairah, Umm Al Quwain, Hamriyah and others) had no verifiable AI announcements in 2026 and show "–". One date (SPC Free Zone, 1,000+ AI firms) is confirmed only to the month and is marked "≈". |
+| Tests | 37 passing |
