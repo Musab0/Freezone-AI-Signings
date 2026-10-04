@@ -51,7 +51,7 @@ DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "In
 ## Setup (one time)
 
 1. Merge this branch into `main`. The scheduled workflow only runs from the default branch.
-2. **Hosting:** Settings → Pages → Build and deployment → Source: **Deploy from a branch**, Branch: `main`, Folder: `/docs`. The site is plain static files, so no build step or Actions minutes are needed.
+2. **Hosting:** GitHub Pages serves the `gh-pages` branch, which is a copy of the `docs/` folder. The daily job republishes it after each run. To publish by hand: `git push --force origin "$(git subtree split --prefix docs HEAD)":refs/heads/gh-pages`.
 3. **Daily refresh:** this needs GitHub Actions to run on the repo (Settings → Actions → General → "Allow all actions", and no billing hold on the account). The workflow regenerates `docs/` and commits it, and Pages republishes it automatically.
 4. Optional settings under Settings → Secrets and variables → Actions:
 

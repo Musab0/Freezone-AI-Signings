@@ -41,8 +41,12 @@ def write_site_data(data, now, hist=None):
         "items": data["items"],
     }
     os.makedirs(os.path.join(SITE_DIR, "data"), exist_ok=True)
+    blob = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     with open(os.path.join(SITE_DIR, "data", "items.json"), "w", encoding="utf-8") as fh:
-        json.dump(payload, fh, ensure_ascii=False, separators=(",", ":"))
+        fh.write(blob)
+    # Same data as a script, so the pages work without a runtime fetch (file://, offline, strict proxies).
+    with open(os.path.join(SITE_DIR, "data", "items.js"), "w", encoding="utf-8") as fh:
+        fh.write("window.FZ_DATA=" + blob.replace("</", "<\\/") + ";\n")
 
 
 def coverage():

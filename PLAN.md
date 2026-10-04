@@ -73,5 +73,5 @@ _Prepared 4 Oct 2026._
 | How it works (`docs/how-it-works.html`) | Done: architecture diagram, reliability model, security and cost, coverage matrix generated from code, health, quality, limitations |
 | Explorer (`docs/explore.html`) | Done: shared navigation, all-time default, "verified" badge |
 | robots.txt compliance | Implemented and tested (it was claimed but not implemented before) |
-| Hosting | Static `docs/` folder on `main`, served by GitHub Pages ("Deploy from a branch → main → /docs"). It doesn't depend on Actions |
+| Hosting | Static `docs/` folder published to the `gh-pages` branch and served by GitHub Pages at https://musab0.github.io/Freezone-AI-Signings/ |
 | Tests | 36 passing |
