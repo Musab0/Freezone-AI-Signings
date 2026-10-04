@@ -8,7 +8,7 @@ Idempotent: items already in the store (same headline fingerprint) are updated, 
 import json
 import os
 
-from . import classify, collect, health, publish, store
+from . import classify, collect, health, prerender, publish, store
 
 SEED_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "seed.json")
 
@@ -42,6 +42,7 @@ def main():
     store.save(data)
     publish.write_site_data(data, now, health.load())
     publish.write_feed(data, now, os.environ.get("SITE_URL", ""))
+    prerender.prerender()
     print(f"seeded {len(seeded)} verified items; store now holds {len(data['items'])}")
 
 

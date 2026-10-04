@@ -12,7 +12,7 @@ import os
 
 from datetime import datetime
 
-from . import classify, collect, config, enrich, fetch, health, notify, publish, store
+from . import classify, collect, config, enrich, fetch, health, notify, prerender, publish, store
 from .http import Fetcher
 
 STATE_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "state.json")
@@ -116,6 +116,8 @@ def main(argv=None):
     publish.write_site_data(data, now, hist)
     publish.write_feed(data, now, site_url)
     digest = publish.write_digest(new_items, now, alerts)
+    if not args.fixture:
+        prerender.prerender()
     with open(os.path.join(publish.ROOT, "data", "HEALTH.md"), "w", encoding="utf-8") as fh:
         fh.write(health.render_markdown(hist, now))
     log.info("run done: %d raw, %d matched, %d new, %d stored; sources ok=%d degraded=%d down=%d; %d alerts",
