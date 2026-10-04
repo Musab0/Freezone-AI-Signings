@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Competitor Briefing</title>
+<meta name="description" content="Executive briefing on AI contracts, adoption and launches by UAE free zones, prepared for DMCC leadership.">
+<link rel="alternate" type="application/rss+xml" title="Free Zone AI Watch" href="feed.xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Free Zone AI Watch</a>
+    <nav aria-label="Pages"><a href="./" aria-current="page">Briefing</a><a href="explore.html">Explore</a><a href="how-it-works.html">How it works</a></nav>
+    <span class="meta" id="updated">Loading...</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow" id="eyebrow">AI competitor briefing</div>
+    <h1 id="headline">Loading briefing...</h1>
+    <p class="lede" id="lede"></p>
+    <div class="actions">
+      <button class="btn primary" onclick="window.print()">Download as PDF</button>
+      <a class="btn" href="explore.html">See all announcements</a>
+      <a class="btn" href="how-it-works.html">How this is produced</a>
+    </div>
+  </section>
+
+  <div class="kpis" id="kpis" aria-label="Headline numbers"></div>
+
+  <section class="section" aria-labelledby="sc-h">
+    <h2 id="sc-h">Leader scorecard</h2>
+    <p class="sub">The flagship AI move of each leading zone in the tracked period, with DMCC as the benchmark.</p>
+    <div class="grid g4" id="scorecard"></div>
+  </section>
+
+  <section class="section grid g2" style="align-items:start">
+    <div class="panel" aria-labelledby="ch-h">
+      <div class="panel-head"><h2 id="ch-h">AI announcements per month</h2>
+        <button class="btn no-print" id="tblbtn" aria-expanded="false" style="font-size:12.5px;padding:3px 9px">Show table</button></div>
+      <div class="legend" id="legend"></div>
+      <div class="chart-wrap" id="chartwrap"><svg class="chart" id="chart" role="img" aria-labelledby="ch-h"></svg><div class="tip" id="tip"></div></div>
+      <div id="charttable" hidden></div>
+    </div>
+    <div class="panel" aria-labelledby="mix-h">
+      <div class="panel-head"><h2 id="mix-h">What competitors are doing</h2><span class="hint">by type of move</span></div>
+      <div id="mix"></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="f-h">
+    <h2 id="f-h">Key findings</h2>
+    <p class="sub" id="f-sub"></p>
+    <div class="grid g2" id="findings"></div>
+  </section>
+
+  <section class="section" aria-labelledby="m-h">
+    <h2 id="m-h">Top competitor moves</h2>
+    <p class="sub">Ranked by signal: type of move, zone, counterparties and strategic importance.</p>
+    <div class="panel"><ol class="list" id="moves"></ol></div>
+  </section>
+
+  <section class="section" aria-labelledby="r-h">
+    <h2 id="r-h">What it means for DMCC</h2>
+    <p class="sub">Recommended responses for discussion.</p>
+    <div class="grid g2" id="recs"></div>
+  </section>
+
+  <p class="foot" id="method"></p>
+</main>
+<script src="brief.js"></script>
+</body>
+</html>
