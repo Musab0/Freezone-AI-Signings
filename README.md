@@ -2,13 +2,38 @@
 
 A daily tracker of **AI contracts, MoUs, adoption, product launches, investment and regulation announced by UAE free zones**. It focuses on the leaders (DIFC and ADGM) so that DMCC knows what competitors are doing.
 
-Every morning at 08:07 Dubai time a GitHub Action:
+Twice a day (08:07 and 18:07 Dubai time) a GitHub Action:
 
-1. **Searches** Google News and Bing News for each of the ~20 tracked zones combined with AI terms. DIFC and ADGM get extra searches focused on deals. It also polls regional business and tech feeds (Zawya, Gulf Business, Arabian Business, The National, WAM, TahawulTech, Intelligent CIO, Khaleej Times).
-2. **Filters and tags** each story. The story must name a tracked zone and an AI term. Each story gets a primary category (Partnership / MoU, Investment, Regulation, Adoption, Product launch, Programmes), notable counterparties (Microsoft, G42, Nvidia, OpenAI…) and a 0–10 *signal* score.
-3. **Optionally runs the story through Claude** (if `ANTHROPIC_API_KEY` is set). Claude removes noise, corrects the category and adds a one-line summary plus a "DMCC angle".
-4. **Dedupes** the same story across outlets, stores it in `data/items.json`, writes a Markdown digest to `digests/YYYY-MM-DD.md` and can email that digest.
-5. **Publishes** the dashboard and an RSS feed to GitHub Pages.
+1. **Scrapes 23 competitor free zone newsrooms directly.** Sources include DIFC, the DFSA, ADGM, Hub71, Dubai Internet City, Dubai Media City, Dubai Science Park, JAFZA, Dubai South, DIEZ, Meydan, IFZA, KEZAD, Masdar, twofour54, RAKEZ, SRTIP, Shams and Ajman. It also scrapes DMCC's own newsroom as a benchmark.
+2. **Reads 11 news outlet feeds.** These are Arabian Business, The National (business and tech), Khaleej Times, AGBI, TahawulTech, Intelligent CIO, ITP, Fintech News ME, Wamda and Gulf Business. Outlets with broken or bot-protected feeds (Zawya, WAM, Gulf News and others) are covered through news search restricted to their domain.
+3. **Searches Google News and Bing News** for each zone combined with AI terms.
+4. **Filters and tags each story.** The story must name a tracked zone and an AI term; official articles are checked against their full body text. Each story gets a primary category (Partnership / MoU, Investment, Regulation, Adoption, Product launch, Programmes), notable counterparties and a 0–10 *signal* score.
+5. **Optionally runs the story through Claude** (if `ANTHROPIC_API_KEY` is set). Claude removes noise, corrects the category and adds a one-line summary plus a "DMCC angle".
+6. **Dedupes** the same story across the official site, outlets and search, preferring the official copy. It then stores the result, writes a daily digest, updates the dashboard and RSS feed, and can email the digest.
+
+## How the scraper stays reliable
+
+No scraper can guarantee it never breaks: sites redesign, add bot walls or go offline. This one is built so that **one failure never silently loses a source**, and so that **any failure is reported to you**.
+
+| Layer | What it does |
+|---|---|
+| **Several strategies per source** | Each official newsroom is read through as many of these as it supports, and the results are merged: its RSS feed, its newsroom listing page, its sitemap (found automatically from robots.txt) and domain-restricted Google/Bing News search. If one breaks, the others still deliver. |
+| **Verified patterns** | Every listing and sitemap pattern was checked against the live sites (Oct 2026). `tests/test_real_sites.py` keeps real article URLs and navigation URLs as regression samples. |
+| **Robust fetching** | A browser user agent, gzip support, retries with backoff, respect for `Retry-After`, and at most one request per host per second. |
+| **Bot walls and JavaScript pages** | Blocked or challenge pages (Cloudflare, Akamai, Incapsula) are detected and retried in a real headless Chromium browser (Playwright). |
+| **Self-healing state** | Article URLs are remembered once seen, so nothing is processed twice. Failed article pages are retried on the next two runs, then kept with a title taken from the URL rather than dropped. |
+| **Catch-up** | If a run is missed (outage, disabled Actions), the next run widens its lookback to cover the gap, up to 30 days. |
+| **Robust date extraction** | Dates are read from JSON-LD, then meta tags, then `<time>`, then the earliest date in the article text. Future dates such as event dates are ignored. When no date exists, the time the story was first seen is used. |
+| **Health monitoring** | Every strategy's result is recorded on every run (`data/health.json` and `data/HEALTH.md`, plus the dashboard's **Source health** panel). A strategy counts as **failed** when it errors *or* when a page loads but no article links match, which is how a redesign shows up. |
+| **Alerts** | After 2 consecutive failures, or when a newsroom goes quiet for longer than its normal rhythm, a **GitHub issue labelled `source-health`** is opened automatically, along with a section in the digest email. The issue closes itself when the source recovers. |
+| **Live CI check** | `python -m tracker.check` exercises every source against the real sites. It runs on every code change and every Monday (`Source check` workflow), and the job fails if any source is completely down. |
+
+Run the live check yourself at any time:
+
+```bash
+python -m tracker.check            # every source, writes data/CHECK.md
+python -m tracker.check difc adgm  # just these
+```
 
 DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "Include DMCC's own news" to show it.
 
@@ -22,8 +47,9 @@ DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "In
 ## Setup (one time)
 
 1. Merge this branch into `main`. The scheduled workflow only runs from the default branch.
-2. **Settings → Pages → Build and deployment → Source: GitHub Actions.** On private repos, Pages needs a paid GitHub plan. If you don't have one, the dated digests in `digests/` still work.
-3. Optional settings under Settings → Secrets and variables → Actions:
+2. **Make sure GitHub Actions can run on this repo:** Settings → Actions → General → "Allow all actions". On a private repo, check that the account has Actions minutes and no billing hold.
+3. **Settings → Pages → Build and deployment → Source: GitHub Actions.** On private repos, Pages needs a paid GitHub plan. If you don't have one, the dated digests in `digests/` still work.
+4. Optional settings under Settings → Secrets and variables → Actions:
 
 | Name | Kind | Purpose |
 |---|---|---|
@@ -32,7 +58,7 @@ DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "In
 | `DIGEST_TO` | variable | Comma-separated recipients of the daily email |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | secrets | Mail server for the digest (STARTTLS, default port 587) |
 
-4. **Actions → Daily free zone AI watch → Run workflow** with `lookback = 30` to backfill the last month. After that it runs every day by itself.
+5. **Actions → Daily free zone AI watch → Run workflow** with `lookback = 30` to backfill the last month. After that it runs every day by itself.
 
 ## Customising
 
@@ -40,13 +66,13 @@ All watch-list settings are in [`tracker/config.py`](tracker/config.py):
 
 - `ZONES`: add a zone or alias. Set `tier: "leader"` to give a zone deal-specific searches and a higher weight.
 - `AI_TERMS`, `CATEGORIES`, `MAJOR_PLAYERS`: what counts as AI, how categories are assigned, and which counterparties raise the signal.
-- `DIRECT_FEEDS`: add official newsroom or trade-press RSS feeds.
+- [`tracker/sources.py`](tracker/sources.py): official newsrooms (listing URL, article URL pattern, sitemap, RSS) and outlet feeds. When you change a pattern, add a real URL to `tests/test_real_sites.py`.
 - Claude model: set the `TRACKER_MODEL` env var (default `claude-opus-5-5`).
 
 ## Run locally
 
 ```bash
-python -m unittest discover -s tests -v                       # tests (stdlib only)
+python -m unittest discover -s tests -t . -v                  # 28 tests, offline
 python -m tracker.run --no-email                              # live run (needs internet)
 python -m tracker.run --fixture tests/fixture.xml --no-email  # offline run on synthetic data
 cd site && python -m http.server                              # view dashboard at localhost:8000
@@ -56,6 +82,7 @@ The core pipeline uses only the Python standard library. `requirements.txt` is n
 
 ## Limits
 
-- Coverage depends on what news search engines index. A press release that only appears on a zone's own website and gets no media pickup can be missed. Add that zone's newsroom RSS to `DIRECT_FEEDS` if it has one.
+- KEZAD's website was unreachable from outside the UAE during testing. DWTC, DHCC and RAK Innovation City publish no sitemap. These four are covered by news search only, so a release with no media pickup can be missed.
+- Google News and Bing RSS terms allow personal, non-commercial use. For an organisation-wide deployment, consider a licensed news API; the official newsroom scrapers don't depend on them.
 - Without Claude, tagging is keyword-based. Expect some false positives, such as a DIFC-based firm's AI news that doesn't involve DIFC itself, and occasional wrong categories.
 - Links from Google News are redirect URLs to the original article.

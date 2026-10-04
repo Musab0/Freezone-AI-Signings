@@ -11,23 +11,27 @@ import json
 import os
 from datetime import datetime, timedelta
 
-from . import collect, sources
+from . import collect, config, sources
 
 HEALTH_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "health.json")
 ALERT_AFTER_RUNS = 2
 SOURCE_NAMES = {s["id"]: s["name"] for s in sources.OFFICIAL}
 SOURCE_NAMES.update({f"outlet:{f['id']}": f["name"] for f in sources.OUTLET_FEEDS})
+SOURCE_NAMES.update({f"zone-search:{z['id']}": f"News search: {z['name']}" for z in config.ZONES})
+SOURCE_NAMES.update({f"outlet-search:{d}": f"News search: {d}" for d in sources.OUTLET_SEARCH_DOMAINS})
 SILENCE = {s["id"]: s.get("max_silence_days") for s in sources.OFFICIAL}
 
 
-def load(path=HEALTH_PATH):
+def load(path=None):
+    path = path or HEALTH_PATH
     if not os.path.exists(path):
         return {"sources": {}}
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
 
 
-def save(data, path=HEALTH_PATH):
+def save(data, path=None):
+    path = path or HEALTH_PATH
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1, sort_keys=True)

@@ -5,7 +5,7 @@ import json
 import re
 import urllib.parse
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from html.parser import HTMLParser
 
@@ -123,6 +123,7 @@ DATE_PATTERNS = [
     re.compile(r"\b(\d{1,2})(?:st|nd|rd|th)?\s+" + _MON + r",?\s+(\d{4})\b", re.I),     # 28 Sept 2026
     re.compile(r"\b" + _MON + r"\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})\b", re.I),      # July 2, 2026
     re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"),                                         # 2026-07-02
+    re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{4})\b"),                                      # 01/10/2026
 ]
 
 
@@ -142,26 +143,33 @@ def parse_date(value):
         return None
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc)
+    dt = dt.astimezone(timezone.utc)
+    return None if dt > datetime.now(timezone.utc) + timedelta(days=1) else dt
 
 
-def find_date(text):
+def find_date(text, latest=None):
+    """Earliest-positioned plausible date in free text (publish dates sit above the body;
+    later dates are usually event dates). Dates after `latest` (default: tomorrow) are ignored."""
+    latest = latest or datetime.now(timezone.utc) + timedelta(days=1)
+    found = []
     for i, pat in enumerate(DATE_PATTERNS):
-        m = pat.search(text or "")
-        if not m:
-            continue
-        try:
-            if i == 0:
-                day, mon, year = int(m.group(1)), MONTHS[m.group(2).lower()[:3]], int(m.group(3))
-            elif i == 1:
-                mon, day, year = MONTHS[m.group(1).lower()[:3]], int(m.group(2)), int(m.group(3))
-            else:
-                year, mon, day = int(m.group(1)), int(m.group(2)), int(m.group(3))
-            if 2000 <= year <= 2100:
-                return datetime(year, mon, day, tzinfo=timezone.utc)
-        except (ValueError, KeyError):
-            continue
-    return None
+        for m in pat.finditer(text or ""):
+            try:
+                if i == 0:
+                    day, mon, year = int(m.group(1)), MONTHS[m.group(2).lower()[:3]], int(m.group(3))
+                elif i == 1:
+                    mon, day, year = MONTHS[m.group(1).lower()[:3]], int(m.group(2)), int(m.group(3))
+                elif i == 2:
+                    year, mon, day = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                else:  # dd/mm/yyyy (UAE convention), mm/dd only when the first number can't be a month
+                    a, b, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                    day, mon = (a, b) if b <= 12 else (b, a)
+                dt = datetime(year, mon, day, tzinfo=timezone.utc)
+            except (ValueError, KeyError):
+                continue
+            if 2000 <= year and dt <= latest:
+                found.append((m.start(), dt))
+    return min(found)[1] if found else None
 
 
 # ---------------------------------------------------------------- articles

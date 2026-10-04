@@ -10,7 +10,9 @@ import json
 import logging
 import os
 
-from . import classify, collect, enrich, fetch, health, notify, publish, store
+from datetime import datetime
+
+from . import classify, collect, config, enrich, fetch, health, notify, publish, store
 from .http import Fetcher
 
 STATE_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "state.json")
@@ -27,6 +29,14 @@ def save_state(state):
     with open(STATE_PATH, "w", encoding="utf-8") as fh:
         json.dump(state, fh, ensure_ascii=False, indent=0, sort_keys=True)
         fh.write("\n")
+
+
+def catch_up_days(data, now):
+    """Default lookback, widened to cover any gap since the last completed run (missed cron, outage)."""
+    if not data.get("runs"):
+        return config.LOOKBACK_DAYS
+    last = datetime.fromisoformat(data["runs"][-1]["at"])
+    return min(30, max(config.LOOKBACK_DAYS, (now - last).days + 2))
 
 
 def tag_all(raw):
@@ -70,8 +80,9 @@ def main(argv=None):
         run_health, new_links = {}, {}
     else:
         fetcher = Fetcher(use_browser=not args.no_browser)
-        kwargs = {"lookback_days": args.lookback} if args.lookback else {}
-        run = collect.Run(fetcher, state, now, **kwargs)
+        lookback = args.lookback or catch_up_days(store.load(), now)
+        log.info("looking back %d days", lookback)
+        run = collect.Run(fetcher, state, now, lookback_days=lookback)
         try:
             raw = run.run_all()
         finally:

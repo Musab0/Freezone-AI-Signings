@@ -95,6 +95,27 @@
     }).join("");
   }
 
+  function renderHealth() {
+    const h = DATA.health || { alerts: [], sources: [] };
+    const n = (st) => h.sources.filter((x) => x.status === st).length;
+    $("health-sum").textContent = h.sources.length
+      ? `${n("ok")} ok · ${n("degraded")} degraded · ${n("down")} down${h.alerts.length ? " · " + h.alerts.length + " alert(s)" : ""}`
+      : "available after the first run";
+    if (h.alerts.length) $("healthbox").open = true;
+    const md = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>");
+    $("alerts").innerHTML = h.alerts.map((a) => `<div class="alert">${md(a)}</div>`).join("");
+    const order = { down: 0, degraded: 1, ok: 2 };
+    const isSearch = (x) => /-search:/.test(x.id);
+    const searches = h.sources.filter(isSearch);
+    const searchOk = searches.filter((x) => x.status === "ok").length;
+    const searchTile = searches.length ? [{ id: "search", name: `News searches: ${searchOk}/${searches.length} answering`,
+      status: searchOk === searches.length ? "ok" : searchOk ? "degraded" : "down",
+      working: searches.filter((x) => x.status === "ok").map((x) => x.name), broken: searches.filter((x) => x.status !== "ok").map((x) => x.name) }] : [];
+    $("health").innerHTML = h.sources.filter((x) => !isSearch(x)).concat(searchTile).sort((a, b) => order[a.status] - order[b.status] || a.name.localeCompare(b.name)).map((x) =>
+      `<div class="hs" title="${esc((x.broken.length ? "Broken: " + x.broken.join(", ") + "\n" : "") + "Working: " + x.working.join(", "))}"><span class="dot ${x.status}"></span><span>${esc(x.name)}</span></div>`
+    ).join("");
+  }
+
   function render() { renderZoneBars(); renderCats(); renderList(); savePrefs(); }
 
   function syncControls() {
@@ -126,7 +147,7 @@
       data.zones.forEach((z) => { ZONES[z.id] = z; });
       $("zone").insertAdjacentHTML("beforeend", data.zones.map((z) => `<option value="${z.id}">${esc(z.name)}${z.self ? " (own)" : ""}</option>`).join(""));
       $("updated").textContent = "Updated " + new Date(data.generated_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" });
-      loadPrefs(); syncControls(); renderKpis(); bind(); render();
+      loadPrefs(); syncControls(); renderKpis(); renderHealth(); bind(); render();
     })
     .catch(() => { $("updated").textContent = "No data yet - the first daily run hasn't happened."; $("empty").hidden = false; });
 })();

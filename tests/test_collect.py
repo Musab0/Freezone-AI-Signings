@@ -187,3 +187,10 @@ class HealthTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class NoSitemapTest(unittest.TestCase):
+    def test_source_without_sitemap_records_no_sitemap_failure(self):
+        run = collect.Run(FakeFetcher(OfficialSourceTest().pages(2)), {}, NOW)
+        run.official(SRC)
+        self.assertFalse(any(k.startswith("sitemap") for k in run.health["testzone"]))

@@ -89,6 +89,8 @@ class Run:
         return list(dict.fromkeys(found))
 
     def _sitemap(self, src, pattern):
+        if not src.get("sitemap"):
+            return []
         entries, errors, fetched = [], [], 0
         queue = self._sitemap_urls(src)
         seen = set()
@@ -200,9 +202,8 @@ class Run:
             problems = []
             if detail_fail:
                 problems.append(f"{detail_fail} article pages failed")
-            if detail_ok and not dated:
-                problems.append("no publish dates found on article pages")
-            self._record(src["id"], "articles", detail_ok > 0 and dated > 0, detail_ok, "; ".join(problems))
+            # Some newsrooms (e.g. Dubai South, DIC) print no dates; first-seen time is used instead.
+            self._record(src["id"], "articles", detail_ok > 0, detail_ok, "; ".join(problems))
         # Domain-restricted news search, independent of the site being reachable at all.
         for domain in [src["domain"]] + src.get("extra_domains", []):
             for e in self.search(f"site:{domain}", src["id"]):

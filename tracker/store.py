@@ -9,7 +9,8 @@ from . import config
 DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "items.json")
 
 
-def load(path=DATA_PATH):
+def load(path=None):
+    path = path or DATA_PATH
     if not os.path.exists(path):
         return {"items": [], "rejected": [], "runs": []}
     with open(path, encoding="utf-8") as fh:
@@ -19,7 +20,8 @@ def load(path=DATA_PATH):
     return data
 
 
-def save(data, path=DATA_PATH):
+def save(data, path=None):
+    path = path or DATA_PATH
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)

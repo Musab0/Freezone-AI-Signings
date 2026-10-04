@@ -2,7 +2,8 @@ name: Daily free zone AI watch
 
 on:
   schedule:
-    - cron: "7 4 * * *"   # 08:07 Dubai time, every day
+    - cron: "7 4 * * *"    # 08:07 Dubai time
+    - cron: "7 14 * * *"   # 18:07 Dubai time - second pass catches afternoon releases and covers a failed morning run
   workflow_dispatch:
     inputs:
       lookback:
@@ -26,6 +27,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -39,7 +41,7 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Run tests
-        run: python -m unittest discover -s tests -v
+        run: python -m unittest discover -s tests -t . -v
 
       - name: Fetch, classify and publish
         if: github.event_name != 'push'
@@ -52,7 +54,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
           DIGEST_TO: ${{ vars.DIGEST_TO }}
-        run: python -m tracker.run --lookback "${{ github.event.inputs.lookback || '3' }}"
+        run: python -m tracker.run ${{ github.event.inputs.lookback && format('--lookback {0}', github.event.inputs.lookback) || '' }}
 
       - name: Rebuild site from stored data
         if: github.event_name == 'push'
@@ -68,7 +70,7 @@ jobs:
           git add data/items.json data/state.json data/health.json data/HEALTH.md digests
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "Daily update $(date -u +%Y-%m-%d)"
-          git push
+          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push && break; sleep 5; done
 
       - name: Open or update the source-health issue
         if: github.event_name != 'push'
