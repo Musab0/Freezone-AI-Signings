@@ -105,19 +105,6 @@ SEARCH_FEEDS = {
     "bing_news": "https://www.bing.com/news/search?q={q}&format=rss&setlang=en-US&cc=AE",
 }
 
-# Extra RSS/Atom feeds polled directly (official newsrooms, trade press). Items still
-# have to mention a tracked zone and an AI term to be kept.
-DIRECT_FEEDS = [
-    "https://www.zawya.com/en/rss/business",
-    "https://gulfbusiness.com/feed/",
-    "https://www.arabianbusiness.com/feed",
-    "https://www.thenationalnews.com/arc/outboundfeeds/rss/category/business/?outputType=xml",
-    "https://wam.ae/en/rss/feed/economy",
-    "https://www.tahawultech.com/feed/",
-    "https://www.intelligentcio.com/me/feed/",
-    "https://www.khaleejtimes.com/stories.rss",
-]
-
 AI_QUERY = '(AI OR "artificial intelligence" OR GenAI OR "generative AI" OR "machine learning" OR agentic)'
 DEAL_QUERY = '(MoU OR partnership OR agreement OR signs OR launches OR deploys OR adopts OR investment)'
 

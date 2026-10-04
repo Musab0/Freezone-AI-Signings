@@ -1,13 +1,10 @@
-"""Pull candidate news items from news-search RSS and direct feeds (stdlib only)."""
+"""RSS/Atom parsing and the zone x AI news-search queries."""
 
 import html
 import logging
 import re
-import time
 import urllib.parse
-import urllib.request
 import xml.etree.ElementTree as ET
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -15,7 +12,6 @@ from . import config
 
 log = logging.getLogger(__name__)
 
-USER_AGENT = "Mozilla/5.0 (compatible; FreezoneAITracker/1.0; +https://github.com/musab0/freezone-ai-signings)"
 TAG_RE = re.compile(r"<[^>]+>")
 
 
@@ -28,19 +24,6 @@ def build_queries():
         if zone["tier"] == "leader":
             queries.append((zone["id"], f"({names}) {config.AI_QUERY} {config.DEAL_QUERY}"))
     return queries
-
-
-def _get(url, retries=2):
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/rss+xml, */*"})
-    for attempt in range(retries + 1):
-        try:
-            with urllib.request.urlopen(req, timeout=25) as resp:
-                return resp.read()
-        except Exception as exc:  # network errors are expected for some feeds; never fatal
-            if attempt == retries:
-                log.warning("fetch failed %s: %s", url[:120], exc)
-                return None
-            time.sleep(2 ** attempt)
 
 
 def clean_text(value):
@@ -110,25 +93,3 @@ def parse_feed(payload, origin):
 def _source_from_url(url):
     host = urllib.parse.urlparse(url or "").netloc.lower()
     return host[4:] if host.startswith("www.") else host
-
-
-def fetch_all(lookback_days=config.LOOKBACK_DAYS):
-    jobs = []
-    for zone_id, query in build_queries():
-        for name, template in config.SEARCH_FEEDS.items():
-            q = f"{query} when:{lookback_days}d" if name == "google_news" else query
-            jobs.append((f"{name}:{zone_id}", template.format(q=urllib.parse.quote(q))))
-    for url in config.DIRECT_FEEDS:
-        jobs.append((f"feed:{_source_from_url(url)}", url))
-
-    def run(job):
-        origin, url = job
-        payload = _get(url)
-        return parse_feed(payload, origin) if payload else []
-
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        results = list(pool.map(run, jobs))
-    ok = sum(1 for r in results if r)
-    items = [item for batch in results for item in batch]
-    log.info("fetched %d raw items from %d/%d feeds", len(items), ok, len(jobs))
-    return items, {"feeds_total": len(jobs), "feeds_with_items": ok}

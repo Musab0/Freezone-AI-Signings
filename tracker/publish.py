@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from xml.sax.saxutils import escape
 
-from . import config
+from . import config, health
 from .classify import ZONES_BY_ID
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
@@ -17,8 +17,16 @@ def zone_names(item):
     return ", ".join(ZONES_BY_ID[z]["name"] for z in item["zones"] if z in ZONES_BY_ID)
 
 
-def write_site_data(data, now):
+def write_site_data(data, now, hist=None):
+    hist = hist or {"sources": {}}
     payload = {
+        "health": {
+            "alerts": health.alerts(hist, now),
+            "sources": [{"id": k, "name": v.get("name", k), "status": v.get("status"), "last_ok": v.get("last_ok"),
+                         "working": sorted(n for n, st in v.get("strategies", {}).items() if st.get("ok")),
+                         "broken": sorted(n for n, st in v.get("strategies", {}).items() if not st.get("ok"))}
+                        for k, v in sorted(hist.get("sources", {}).items())],
+        },
         "generated_at": now.isoformat(),
         "zones": [{k: z.get(k) for k in ("id", "name", "emirate", "tier", "self", "parent")} for z in config.ZONES],
         "categories": [name for name, _ in config.CATEGORIES] + [config.DEFAULT_CATEGORY],
@@ -64,7 +72,7 @@ def _is_self_only(item):
     return all(ZONES_BY_ID.get(z, {}).get("self") for z in item["zones"])
 
 
-def render_digest(new_items, now):
+def render_digest(new_items, now, alerts=()):
     competitors = sorted((i for i in new_items if not _is_self_only(i)), key=lambda i: -i["score"])
     own = [i for i in new_items if _is_self_only(i)]
     lines = [f"# UAE Free Zone AI Watch - {now:%d %b %Y}", ""]
@@ -86,6 +94,9 @@ def render_digest(new_items, now):
                 if i.get("dmcc_angle"):
                     lines.append(f"  - DMCC angle: {i['dmcc_angle']}")
             lines.append("")
+    if alerts:
+        lines += ["## Source health alerts", "", "These scrapers need attention (see data/HEALTH.md):", ""]
+        lines += [f"- {a}" for a in alerts] + [""]
     if own:
         lines += ["## For reference: DMCC's own coverage", ""]
         lines += [f"- [{i['title']}]({i['url']}) - _{i['source']}_" for i in own]
@@ -93,9 +104,9 @@ def render_digest(new_items, now):
     return "\n".join(lines)
 
 
-def write_digest(new_items, now):
+def write_digest(new_items, now, alerts=()):
     os.makedirs(DIGEST_DIR, exist_ok=True)
-    text = render_digest(new_items, now)
+    text = render_digest(new_items, now, alerts)
     with open(os.path.join(DIGEST_DIR, f"{now:%Y-%m-%d}.md"), "w", encoding="utf-8") as fh:
         fh.write(text)
     return text

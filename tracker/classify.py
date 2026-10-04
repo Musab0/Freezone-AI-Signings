@@ -87,30 +87,51 @@ def score(item):
         s += 1
     if any(_alias_re(a).search(item["title"]) for z in item["zones"] for a in ZONES_BY_ID[z]["aliases"]):
         s += 1
+    if item.get("official"):
+        s += 1
     return min(s, 10)
 
 
+def is_ai_story(title, summary, body=""):
+    """AI in the headline/standfirst, or repeatedly in the article body (one stray nav link is not enough)."""
+    if is_ai_related(f"{title}. {summary}"):
+        return True
+    hits = {m.group(0).lower() for m in _AI_RE.finditer(body or "")}
+    return len(_AI_RE.findall(body or "")) >= 3 and len(hits) >= 2
+
+
 def tag(raw):
-    """Turn a raw feed item into a tracked item, or None if it is off-topic."""
+    """Turn a raw collected item into a tracked item, or None if it is off-topic."""
     title = clean_title(raw["title"], raw.get("source", ""))
-    text = f"{title}. {raw.get('summary', '')}"
-    zones = detect_zones(text)
-    if not zones or not is_ai_related(text):
+    summary = raw.get("summary", "")
+    body = raw.get("body", "")
+    text = f"{title}. {summary}"
+    zones = detect_zones(f"{text} {body[:3000]}" if raw.get("official") else text)
+    hint = raw.get("zone_hint")
+    if hint:
+        # The publisher's own zone always counts, and comes first.
+        zones = [hint] + [z for z in zones if z != hint]
+        parent = ZONES_BY_ID.get(hint, {}).get("parent")
+        if parent and parent not in zones:
+            zones.append(parent)
+    if not zones or not is_ai_story(title, summary, body):
         return None
-    category, categories = categorize(text)
+    category, categories = categorize(f"{text} {body[:1500]}")
     item = {
         "id": fingerprint(title),
         "title": title,
         "url": raw["url"],
         "source": raw.get("source", ""),
         "published": raw.get("published"),
-        "summary": raw.get("summary", ""),
+        "summary": summary,
         "zones": zones,
         "category": category,
         "categories": categories,
-        "players": find_players(text),
+        "players": find_players(f"{text} {body[:3000]}"),
         "origin": raw.get("origin", ""),
+        "official": bool(raw.get("official")) and not raw.get("origin", "").startswith(("google", "bing")),
         "enriched": False,
+        "body": body[:2000],
     }
     item["score"] = score(item)
     return item

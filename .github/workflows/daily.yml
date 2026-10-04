@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pages: write
   id-token: write
 
@@ -32,8 +33,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install optional dependencies
-        run: pip install -r requirements.txt
+      - name: Install dependencies (incl. headless browser fallback)
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
 
       - name: Run tests
         run: python -m unittest discover -s tests -v
@@ -62,10 +65,28 @@ jobs:
         run: |
           git config user.name "freezone-ai-watch[bot]"
           git config user.email "freezone-ai-watch@users.noreply.github.com"
-          git add data digests
+          git add data/items.json data/state.json data/health.json data/HEALTH.md digests
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "Daily update $(date -u +%Y-%m-%d)"
           git push
+
+      - name: Open or update the source-health issue
+        if: github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          alerts=$(python -c "import json;d=json.load(open('site/data/items.json'));print(len(d['health']['alerts']))")
+          existing=$(gh issue list --label source-health --state open --json number -q '.[0].number' || true)
+          if [ "$alerts" -gt 0 ]; then
+            gh label create source-health --color B60205 --description "Scraper health alerts" 2>/dev/null || true
+            if [ -n "$existing" ]; then
+              gh issue edit "$existing" --body-file data/HEALTH.md
+            else
+              gh issue create --title "Source health: scrapers need attention" --label source-health --body-file data/HEALTH.md
+            fi
+          elif [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "All sources healthy again as of $(date -u +%Y-%m-%d)."
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:

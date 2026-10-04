@@ -1,0 +1,39 @@
+name: Source check
+
+# Live-tests every scraper strategy against the real sites. Runs on code changes and weekly,
+# so a site redesign is caught even in weeks when the daily run happens to find nothing new.
+on:
+  push:
+    paths: ["tracker/**", "tests/**", ".github/workflows/source-check.yml"]
+  schedule:
+    - cron: "23 2 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies (incl. headless browser fallback)
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Live source check
+        run: python -m tracker.check
+      - name: Publish report
+        if: always()
+        run: test -f data/CHECK.md && cat data/CHECK.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-check
+          path: data/CHECK.md

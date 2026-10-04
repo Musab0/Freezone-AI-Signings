@@ -76,7 +76,7 @@ def enrich(items):
     for start in range(0, len(pending), BATCH_SIZE):
         batch = pending[start:start + BATCH_SIZE]
         payload = [{"id": i["id"], "title": i["title"], "source": i["source"], "published": i["published"],
-                    "snippet": i["summary"][:400], "rule_zones": i["zones"], "rule_category": i["category"]}
+                    "snippet": (i["summary"] + " " + i.get("body", ""))[:1200], "rule_zones": i["zones"], "rule_category": i["category"]}
                    for i in batch]
         try:
             response = client.messages.parse(
