@@ -1,0 +1,536 @@
+{
+ "items": [
+  {
+   "id": "e98309e00754412f",
+   "title": "US-based Brain Digits opens office in Masdar City to build AI solutions for the UAE and GCC",
+   "url": "https://www.zawya.com/en/press-release/companies-news/us-based-brain-digits-opens-office-in-masdar-city-1386611",
+   "source": "Zawya",
+   "published": "2026-09-29T08:56:18+00:00",
+   "summary": "The office will develop AI solutions for the UAE market as Abu Dhabi pushes to become an AI-native government.",
+   "zones": [
+    "masdar"
+   ],
+   "category": "Company Attraction",
+   "categories": [
+    "Company Attraction"
+   ],
+   "players": [],
+   "counterparties": [
+    "Brain Digits"
+   ],
+   "ai_summary": "The office will develop AI solutions for the UAE market as Abu Dhabi pushes to become an AI-native government.",
+   "dmcc_angle": "Abu Dhabi's AI-native government agenda is pulling AI vendors into Abu Dhabi zones.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 5
+  },
+  {
+   "id": "0c7e711a924e39a7",
+   "title": "RTA opens Dubai Mobility Labs at Dubai Silicon Oasis with 248 autonomous-vehicle test scenarios",
+   "url": "https://tbreak.com/dubai-mobility-labs-silicon-oasis-driverless-testing/",
+   "source": "Tbreak",
+   "published": "2026-09-27T17:36:00+00:00",
+   "summary": "A testing and certification facility for autonomous mobility in Dubai Silicon Oasis, combining controlled scenarios with public-road trials; DEKRA operates it for three years.",
+   "zones": [
+    "diez"
+   ],
+   "category": "Adoption & Deployment",
+   "categories": [
+    "Adoption & Deployment"
+   ],
+   "players": [],
+   "counterparties": [
+    "RTA",
+    "DEKRA"
+   ],
+   "ai_summary": "A testing and certification facility for autonomous mobility in Dubai Silicon Oasis, combining controlled scenarios with public-road trials; DEKRA operates it for three years.",
+   "dmcc_angle": "DIEZ is anchoring physical-AI and autonomy infrastructure in its zones.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "c86786eb50e9fc5f",
+   "title": "SAP and Dubai Internet City convene women leaders on building the UAE's AI-ready workforce",
+   "url": "https://www.tradingview.com/news/reuters.com,2026-09-14:newsml_Zaw7LSRnp:0-zawya-sap-puts-women-at-heart-of-uae-s-ai-ready-workforce/",
+   "source": "Zawya / TradeArabia",
+   "published": "2026-09-14T10:35:00+00:00",
+   "summary": "An executive panel and youth circle at Dubai Internet City on AI and women's careers in technology, part of Emirati Women's Day.",
+   "zones": [
+    "tecom"
+   ],
+   "category": "Programmes & Ecosystem",
+   "categories": [
+    "Programmes & Ecosystem"
+   ],
+   "players": [
+    "SAP"
+   ],
+   "counterparties": [
+    "SAP"
+   ],
+   "ai_summary": "An executive panel and youth circle at Dubai Internet City on AI and women's careers in technology, part of Emirati Women's Day.",
+   "dmcc_angle": "TECOM uses anchor tenants (SAP) to run AI talent events - low-cost visibility.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "cb5f09fe66deba87",
+   "title": "'SHE Leads with AI': Dubai AI Campus launches its first female-founder accelerator at DIFC Innovation Hub",
+   "url": "https://www.edinburghnews.scotsman.com/your-world/edinburgh-entrepreneur-launches-dubai-ai-campuss-first-female-founder-accelerator-9022967",
+   "source": "Edinburgh News",
+   "published": "2026-09-11T15:25:55+00:00",
+   "summary": "A six-day programme with fully funded places for 30 women founders, delivered at DIFC Innovation Hub with an investor showcase; it starts 16 November 2026.",
+   "zones": [
+    "difc"
+   ],
+   "category": "Programmes & Ecosystem",
+   "categories": [
+    "Programmes & Ecosystem"
+   ],
+   "players": [],
+   "counterparties": [
+    "The Power Diaspora Forum"
+   ],
+   "ai_summary": "A six-day programme with fully funded places for 30 women founders, delivered at DIFC Innovation Hub with an investor showcase; it starts 16 November 2026.",
+   "dmcc_angle": "Dubai AI Campus keeps adding targeted founder programmes that widen DIFC's AI talent funnel.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "946fc657021c763f",
+   "title": "ADGM completes phase one of in-house AI rollout: 25 business functions, 5,000+ staff hours saved a year, AED 400m roadmap to 2029",
+   "url": "https://www.prnewswire.com/news-releases/adgm-reinforces-abu-dhabis-standing-as-a-global-financial-hub-with-54-growth-in-aum-and-almost-14-000-active-licences-302872415.html",
+   "source": "ADGM via PR Newswire",
+   "published": "2026-09-08T14:12:00+00:00",
+   "summary": "ADGM deployed AI across licensing, supervision and customer service; about 25% of customer enquiries are now resolved instantly, and it will invest more than AED 400m in AI, data and cyber capabilities to 2029.",
+   "zones": [
+    "adgm"
+   ],
+   "category": "Adoption & Deployment",
+   "categories": [
+    "Adoption & Deployment"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "ADGM deployed AI across licensing, supervision and customer service; about 25% of customer enquiries are now resolved instantly, and it will invest more than AED 400m in AI, data and cyber capabilities to 2029.",
+   "dmcc_angle": "ADGM can now show measured, member-facing AI results. DMCC members will compare service speed directly.",
+   "importance": 5,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 9
+  },
+  {
+   "id": "cc537d959eb830bd",
+   "title": "ADGM Academy launches WMI School of AI, training 544 UAE Nationals in agentic AI",
+   "url": "https://www.prnewswire.com/news-releases/adgm-reinforces-abu-dhabis-standing-as-a-global-financial-hub-with-54-growth-in-aum-and-almost-14-000-active-licences-302872415.html#ai-talent",
+   "source": "ADGM via PR Newswire",
+   "published": "2026-09-08T14:12:00+00:00",
+   "summary": "Part of ADGM Academy's H1 2026 output of 1,607 Emiratis trained; the agentic-AI school targets the wealth-management sector.",
+   "zones": [
+    "adgm"
+   ],
+   "category": "Programmes & Ecosystem",
+   "categories": [
+    "Programmes & Ecosystem"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "Part of ADGM Academy's H1 2026 output of 1,607 Emiratis trained; the agentic-AI school targets the wealth-management sector.",
+   "dmcc_angle": "Sector-specific AI skills programmes with published numbers are becoming standard for leading zones.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "e124d55600e9734e",
+   "title": "ADGM entities now hold more than USD 100bn in AI-focused investment, anchored by FSRA-licensed MGX",
+   "url": "https://gulfnews.com/business/markets/adgm-assets-jump-54-workforce-nears-50000-1.500666929",
+   "source": "Gulf News",
+   "published": "2026-09-08T08:50:58+00:00",
+   "summary": "ADGM positions itself as the jurisdiction of choice for institutions deploying capital into AI, alongside 54% AUM growth in H1 2026.",
+   "zones": [
+    "adgm"
+   ],
+   "category": "Investment & Funding",
+   "categories": [
+    "Investment & Funding"
+   ],
+   "players": [
+    "MGX"
+   ],
+   "counterparties": [
+    "MGX"
+   ],
+   "ai_summary": "ADGM positions itself as the jurisdiction of choice for institutions deploying capital into AI, alongside 54% AUM growth in H1 2026.",
+   "dmcc_angle": "Abu Dhabi is cornering AI capital; DMCC's angle is more naturally AI applied to trade and commodities.",
+   "importance": 4,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 8
+  },
+  {
+   "id": "bf6e10ba9ba31601",
+   "title": "Shams AI Club trains 300+ professionals from 16 government entities; programmes run to end of October",
+   "url": "https://www.shams.ae/news/details?article=More%20than%20300%20professionals%20from%2016%20government%20entities%20benefit%20from%20specialised%20AI%20programmes%20and%20workshops%20continuing%20through%20October&hsLang=en",
+   "source": "Shams Newsroom",
+   "published": "2026-08-31T08:00:00+00:00",
+   "summary": "The first phase targets 500 participants with training on prompt engineering, automation, data analysis and responsible AI.",
+   "zones": [
+    "sharjah"
+   ],
+   "category": "Programmes & Ecosystem",
+   "categories": [
+    "Programmes & Ecosystem"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "The first phase targets 500 participants with training on prompt engineering, automation, data analysis and responsible AI.",
+   "dmcc_angle": "Even media free zones run structured AI-skills programmes with public targets.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 4
+  },
+  {
+   "id": "5d49b93d4f7a6ef5",
+   "title": "DIFC sets ambition to become the world's first AI-Native financial centre; AI, FinTech and innovation firms up 39% to 1,933",
+   "url": "https://www.difc.com/whats-on/news/industry-leading-achievements-h1-2026",
+   "source": "DIFC Newsroom",
+   "published": "2026-07-28T08:00:00+00:00",
+   "summary": "In its H1 2026 results DIFC said AI will be embedded across its regulation, operations, talent and infrastructure, a transformation it expects to generate USD 3.5bn in economic value and 25,000 jobs; its Innovation Hub added 361 firms in H1.",
+   "zones": [
+    "difc"
+   ],
+   "category": "Programmes & Ecosystem",
+   "categories": [
+    "Programmes & Ecosystem"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "In its H1 2026 results DIFC said AI will be embedded across its regulation, operations, talent and infrastructure, a transformation it expects to generate USD 3.5bn in economic value and 25,000 jobs; its Innovation Hub added 361 firms in H1.",
+   "dmcc_angle": "DIFC has turned AI into a whole-of-centre brand promise with hard targets - the benchmark any DMCC AI positioning will be compared against.",
+   "importance": 5,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 8
+  },
+  {
+   "id": "80daddc7583ae0b4",
+   "title": "DMCC, Deloitte and the Blockchain Game Alliance launch the AI & Agentics Council",
+   "url": "https://egamers.io/deloitte-dmcc-and-the-blockchain-game-alliance-form-a-council-to-govern-ai-agents-that-control-wallets/",
+   "source": "eGamers.io",
+   "published": "2026-07-26T01:23:22+00:00",
+   "summary": "A council to set standards for AI agents that control digital wallets, with Xsolla among founding partners.",
+   "zones": [
+    "dmcc"
+   ],
+   "category": "Partnership / MoU",
+   "categories": [
+    "Partnership / MoU"
+   ],
+   "players": [
+    "Deloitte"
+   ],
+   "counterparties": [
+    "Deloitte",
+    "Blockchain Game Alliance"
+   ],
+   "ai_summary": "A council to set standards for AI agents that control digital wallets, with Xsolla among founding partners.",
+   "dmcc_angle": "Gives DMCC a governance foothold in agentic AI that peers do not yet have.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 7
+  },
+  {
+   "id": "663666e451588690",
+   "title": "UK PC maker Chillblast sets up GCC base in Innovation City Ras Al Khaimah for AI and gaming systems",
+   "url": "https://www.einnews.com/pr_news/928821793/innovation-city-ras-al-khaimah-attracts-uk-s-most-awarded-pc-manufacturer-chillblast-for-gcc-expansion",
+   "source": "EIN Presswire",
+   "published": "2026-07-23T13:08:37+00:00",
+   "summary": "Chillblast's high-performance AI and gaming systems will be supported from its new regional base in Innovation City.",
+   "zones": [
+    "rakinc"
+   ],
+   "category": "Company Attraction",
+   "categories": [
+    "Company Attraction"
+   ],
+   "players": [],
+   "counterparties": [
+    "Chillblast"
+   ],
+   "ai_summary": "Chillblast's high-performance AI and gaming systems will be supported from its new regional base in Innovation City.",
+   "dmcc_angle": "Innovation City is converting its AI-and-gaming positioning into named company wins - DMCC also courts gaming firms.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 4
+  },
+  {
+   "id": "b33abbfe9cd55cb1",
+   "title": "Innovation City (RAK) and Siada launch the Middle East's first sovereign AI data centre with NVIDIA B200 GPUs",
+   "url": "https://innovationcity.com/news/innovation-city-and-iopn-launch-the-middle-east-s-first-sovereign-ai-data-center",
+   "source": "Innovation City Newsroom",
+   "published": "2026-07-06T11:12:00+00:00",
+   "summary": "Licensed companies can rent sovereign GPU compute by the hour, reserve capacity or run fully managed environments, with data kept in the UAE.",
+   "zones": [
+    "rakinc"
+   ],
+   "category": "Product & Launch",
+   "categories": [
+    "Product & Launch"
+   ],
+   "players": [],
+   "counterparties": [
+    "Siada (IOPn)",
+    "NVIDIA"
+   ],
+   "ai_summary": "Licensed companies can rent sovereign GPU compute by the hour, reserve capacity or run fully managed environments, with data kept in the UAE.",
+   "dmcc_angle": "A small zone is competing on compute access, not licence price - a lever DMCC could match through partnerships.",
+   "importance": 5,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 8
+  },
+  {
+   "id": "5c076bae6aefe0af",
+   "title": "DIFC launches consultation on amended Data Protection Regulations with new AI-related safeguards",
+   "url": "https://www.difc.com/whats-on/news/difc-consultation-amended-data-protection-regulations",
+   "source": "DIFC Newsroom",
+   "published": "2026-06-18T08:00:00+00:00",
+   "summary": "Proposed amendments strengthen governance and accountability for systems that process personal data, with specific safeguards for AI-driven processing.",
+   "zones": [
+    "difc"
+   ],
+   "category": "Regulation & Policy",
+   "categories": [
+    "Regulation & Policy"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "Proposed amendments strengthen governance and accountability for systems that process personal data, with specific safeguards for AI-driven processing.",
+   "dmcc_angle": "Regulatory clarity on AI and data is becoming a selling point for AI firms choosing a free zone.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "05143658659ce529",
+   "title": "DIFC Future of Finance report: AI-driven challenger banks reshape the industry; banks risk losing USD 170bn in profits by 2030",
+   "url": "https://www.arabianbusiness.com/finance/banking/difc-warns-banks-could-lose-170bn-in-profits-by-2030-without-ai-led-transformation",
+   "source": "Arabian Business",
+   "published": "2026-06-17T08:00:00+00:00",
+   "summary": "DIFC's research report argues banks must adopt AI-led operating models or lose up to USD 170bn in profits by 2030.",
+   "zones": [
+    "difc"
+   ],
+   "category": "News & Commentary",
+   "categories": [
+    "News & Commentary"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "DIFC's research report argues banks must adopt AI-led operating models or lose up to USD 170bn in profits by 2030.",
+   "dmcc_angle": "DIFC pairs its AI strategy with sector research - a playbook DMCC already uses with its Future of Trade report.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 4
+  },
+  {
+   "id": "27dac07037684ce1",
+   "title": "DMCC Future of Trade 2026: AI now accounts for 43% of global trade growth",
+   "url": "https://www.arabianbusiness.com/business/technology/ai-now-accounts-for-43-per-cent-of-global-trade-growth-says-dmcc-report",
+   "source": "Arabian Business",
+   "published": "2026-06-11T20:05:50+00:00",
+   "summary": "DMCC's flagship report says AI is becoming the dominant driver of global trade growth amid tariffs and supply-chain disruption.",
+   "zones": [
+    "dmcc"
+   ],
+   "category": "News & Commentary",
+   "categories": [
+    "News & Commentary"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "DMCC's flagship report says AI is becoming the dominant driver of global trade growth amid tariffs and supply-chain disruption.",
+   "dmcc_angle": "DMCC's strongest AI asset today is thought leadership on AI-in-trade.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 5
+  },
+  {
+   "id": "b868ffd45efcf1f1",
+   "title": "Emirati founders unveil AI-powered solutions at Hub71 Impact 2026",
+   "url": "https://www.emirates247.com/business/emirati-startup-founders-unveil-ai-powered-innovations-at-hub71-impact-2026/2406",
+   "source": "Emirates 24|7 (WAM)",
+   "published": "2026-06-09T17:22:00+00:00",
+   "summary": "Hub71's showcase featured Emirati start-ups applying AI in marketing, healthcare and advanced manufacturing.",
+   "zones": [
+    "hub71",
+    "adgm"
+   ],
+   "category": "Programmes & Ecosystem",
+   "categories": [
+    "Programmes & Ecosystem"
+   ],
+   "players": [],
+   "counterparties": [],
+   "ai_summary": "Hub71's showcase featured Emirati start-ups applying AI in marketing, healthcare and advanced manufacturing.",
+   "dmcc_angle": "Hub71 keeps a visible pipeline of AI founders - useful context for DMCC's start-up programmes.",
+   "importance": 2,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "2dd995bd10bb1d1e",
+   "title": "Mastercard Lighthouse and Hub71 open UAE AI start-up programme",
+   "url": "https://www.edtechinnovationhub.com/news/mastercard-lighthouse-and-hub71-open-uae-ai-startup-program",
+   "source": "EdTech Innovation Hub",
+   "published": "2026-06-03T00:30:23+00:00",
+   "summary": "A four-month programme for start-ups using AI in financial services, commerce, risk and MSME solutions, run under the Mastercard UAE AI Center of Excellence with the UAE AI Office.",
+   "zones": [
+    "hub71",
+    "adgm"
+   ],
+   "category": "Partnership / MoU",
+   "categories": [
+    "Partnership / MoU"
+   ],
+   "players": [
+    "Mastercard"
+   ],
+   "counterparties": [
+    "Mastercard"
+   ],
+   "ai_summary": "A four-month programme for start-ups using AI in financial services, commerce, risk and MSME solutions, run under the Mastercard UAE AI Center of Excellence with the UAE AI Office.",
+   "dmcc_angle": "Global corporates are co-running AI programmes inside competitor ecosystems.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 8
+  },
+  {
+   "id": "8531156e970ac4e5",
+   "title": "Positron AI opens its first office outside the US in DIFC",
+   "url": "https://enterpriseam.com/uae/2026/06/02/adia-backs-insurtech-sapiens-positron-ai-comes-to-difc-dp-world-invests-more-in-dominican-republic-freezone-adnoc-secures-gas-supply-from-azerbaijan/",
+   "source": "EnterpriseAM",
+   "published": "2026-06-02T06:00:00+00:00",
+   "summary": "US AI-inference hardware maker Positron AI, which has raised more than USD 300m, chose DIFC for its first international office.",
+   "zones": [
+    "difc"
+   ],
+   "category": "Company Attraction",
+   "categories": [
+    "Company Attraction"
+   ],
+   "players": [],
+   "counterparties": [
+    "Positron AI"
+   ],
+   "ai_summary": "US AI-inference hardware maker Positron AI, which has raised more than USD 300m, chose DIFC for its first international office.",
+   "dmcc_angle": "AI infrastructure companies - not only AI software start-ups - are now being won by the financial centres.",
+   "importance": 3,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 6
+  },
+  {
+   "id": "f3733141a845ced1",
+   "title": "ROX signs lease for one of the Middle East's first advanced AI manufacturing centres in KEZAD Musaffah",
+   "url": "https://www.kezadgroup.com/news-and-media/2026/05/07/rox-to-establish-one-of-the-middle-easts-first-advanced-ai-manufacturing-centres-in-kezads-klp-1-musaffah/",
+   "source": "KEZAD Group Newsroom",
+   "published": "2026-05-07T06:00:39+00:00",
+   "summary": "A 10,000 sqm intelligent manufacturing facility starting operations in H2 2026, targeting 300,000 vehicles a year by 2030.",
+   "zones": [
+    "kezad"
+   ],
+   "category": "Partnership / MoU",
+   "categories": [
+    "Partnership / MoU"
+   ],
+   "players": [],
+   "counterparties": [
+    "ROX",
+    "ADIO"
+   ],
+   "ai_summary": "A 10,000 sqm intelligent manufacturing facility starting operations in H2 2026, targeting 300,000 vehicles a year by 2030.",
+   "dmcc_angle": "Industrial zones are attracting 'AI manufacturing' anchors - AI is spreading beyond tech and finance zones.",
+   "importance": 4,
+   "origin": "research",
+   "official": false,
+   "enriched": true,
+   "verified": "2026-10-04",
+   "first_seen": "2026-10-04T00:00:00+00:00",
+   "score": 8
+  }
+ ],
+ "rejected": [],
+ "runs": []
+}

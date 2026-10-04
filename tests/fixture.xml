@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic test data in Google News RSS shape. Not real news. -->
+<rss version="2.0"><channel><title>fixture</title>
+<item><title>DIFC signs MoU with ExampleCloud to build generative AI sandbox for fintechs - Example Wire</title>
+<link>https://example.com/a</link><pubDate>Fri, 02 Oct 2026 08:00:00 GMT</pubDate>
+<description>&lt;a href="x"&gt;Dubai International Financial Centre&lt;/a&gt; partners with Microsoft on AI</description>
+<source url="https://examplewire.com">Example Wire</source></item>
+<item><title>DIFC signs MoU with ExampleCloud to build generative AI sandbox for fintechs - Other Paper</title>
+<link>https://example.org/a2</link><pubDate>Fri, 02 Oct 2026 09:00:00 GMT</pubDate>
+<description>duplicate story</description><source url="https://otherpaper.com">Other Paper</source></item>
+<item><title>ADGM's FSRA issues consultation paper on AI governance for asset managers - Example Wire</title>
+<link>https://example.com/b</link><pubDate>Thu, 01 Oct 2026 10:00:00 GMT</pubDate>
+<description>Abu Dhabi Global Market regulator</description><source url="https://examplewire.com">Example Wire</source></item>
+<item><title>Hub71 startup raises $20 million to scale agentic AI platform - Example Wire</title>
+<link>https://example.com/c</link><pubDate>Wed, 30 Sep 2026 10:00:00 GMT</pubDate>
+<description>Abu Dhabi based</description><source url="https://examplewire.com">Example Wire</source></item>
+<item><title>DIFC hosts record art fair weekend - Example Wire</title>
+<link>https://example.com/d</link><pubDate>Wed, 30 Sep 2026 10:00:00 GMT</pubDate>
+<description>Culture news, nothing about technology</description><source url="https://examplewire.com">Example Wire</source></item>
+<item><title>DMCC launches AI Centre accelerator cohort - Example Wire</title>
+<link>https://example.com/e</link><pubDate>Tue, 29 Sep 2026 10:00:00 GMT</pubDate>
+<description>Dubai</description><source url="https://examplewire.com">Example Wire</source></item>
+<item><title>DSO tender for transformers awarded in Ohio - Example Wire</title>
+<link>https://example.com/f</link><pubDate>Tue, 29 Sep 2026 10:00:00 GMT</pubDate>
+<description>Distribution system operator uses AI for grid planning</description><source url="https://examplewire.com">Example Wire</source></item>
+<item><title>Dubai Silicon Oasis deploys AI-powered smart city platform with Oracle - Example Wire</title>
+<link>https://example.com/g</link><pubDate>Mon, 28 Sep 2026 10:00:00 GMT</pubDate>
+<description></description><source url="https://examplewire.com">Example Wire</source></item>
+</channel></rss>

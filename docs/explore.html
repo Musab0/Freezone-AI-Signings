@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explore Announcements</title>
+<meta name="description" content="Daily tracker of AI contracts, MoUs, adoption and launches announced by UAE free zones - competitor watch for DMCC.">
+<link rel="alternate" type="application/rss+xml" title="Free Zone AI Watch" href="feed.xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Free Zone AI Watch</a>
+    <nav aria-label="Pages"><a href="./">Briefing</a><a href="explore.html" aria-current="page">Explore</a><a href="how-it-works.html">How it works</a></nav>
+    <span class="meta"><span id="updated">Loading...</span> · <a href="feed.xml">RSS</a></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero"><div class="eyebrow">Explore</div><h1>Every tracked AI announcement</h1><p class="lede">Search and filter all collected items. Verified items are marked; automated items appear as the daily pipeline runs.</p></div>
+  <section class="kpis" id="kpis" aria-label="Headline numbers"></section>
+
+  <section class="panel" aria-labelledby="zones-h">
+    <div class="panel-head">
+      <h2 id="zones-h">Who's moving - competitor items, last 30 days</h2>
+      <span class="hint">Click a zone to filter</span>
+    </div>
+    <div id="zonebars" class="zonebars"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="health-h">
+    <details id="healthbox">
+      <summary class="panel-head"><h2 id="health-h">Source health</h2><span id="health-sum" class="hint"></span></summary>
+      <div id="alerts"></div>
+      <div id="health" class="health"></div>
+    </details>
+  </section>
+
+  <section class="panel" aria-labelledby="feed-h">
+    <div class="panel-head">
+      <h2 id="feed-h">Announcements</h2>
+      <span id="count" class="hint"></span>
+    </div>
+    <div class="filters">
+      <input id="q" type="search" placeholder="Search title, partner, source..." aria-label="Search">
+      <select id="zone" aria-label="Zone"><option value="">All zones</option></select>
+      <select id="period" aria-label="Period">
+        <option value="1">Last 24 hours</option>
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="0" selected>All time</option>
+      </select>
+      <select id="sort" aria-label="Sort">
+        <option value="date">Newest first</option>
+        <option value="score">Highest signal first</option>
+      </select>
+      <label class="check"><input id="leaders" type="checkbox"> DIFC &amp; ADGM only</label>
+      <label class="check"><input id="self" type="checkbox"> Include DMCC's own news</label>
+    </div>
+    <div id="cats" class="chips" role="group" aria-label="Category"></div>
+    <ol id="list" class="list"></ol>
+    <p id="empty" class="empty" hidden>Nothing matches these filters yet. The tracker updates every morning; widen the period or clear filters.</p>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  Sources: Google News and Bing News search plus regional business feeds, refreshed daily. Signal score (0-10) weighs deal type, zone, major counterparties and, when enabled, Claude's importance rating. Always check the original article before you rely on it.
+</footer>
+<script src="explore.js"></script>
+</body>
+</html>

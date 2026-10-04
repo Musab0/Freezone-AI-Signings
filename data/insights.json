@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-10-04",
+ "author": "Analyst notes based on the verified items in this tracker",
+ "headline": "The leading free zones have moved from talking about AI to running on it. DIFC has committed to becoming an 'AI-native' financial centre and ADGM already runs AI in 25 of its own functions. DMCC's AI profile today is thought leadership and governance, without a comparable flagship programme.",
+ "findings": [
+  {"title": "AI is now a whole-of-zone strategy for the two leaders",
+   "text": "DIFC targets USD 3.5bn in economic value and 25,000 jobs from becoming AI-native. ADGM has AI live across licensing, supervision and customer service, backed by an AED 400m roadmap to 2029.",
+   "zones": ["difc", "adgm"]},
+  {"title": "AI capital and AI firms are concentrating in the financial centres",
+   "text": "ADGM entities hold more than USD 100bn in AI-focused investment (anchored by MGX). DIFC's AI, FinTech and innovation firms grew 39% in a year to 1,933, and it is winning AI infrastructure firms such as Positron AI.",
+   "zones": ["difc", "adgm"]},
+  {"title": "Smaller zones compete on compute and niches",
+   "text": "RAK's Innovation City now rents sovereign NVIDIA B200 GPU capacity to its licensees. KEZAD signed an AI manufacturing anchor (ROX), and DSO hosts Dubai's autonomous-vehicle test labs.",
+   "zones": ["rakinc", "kezad", "diez"]},
+  {"title": "AI talent programmes with public targets are table stakes",
+   "text": "ADGM trained 544 Emiratis in agentic AI, Shams 300+ government staff, and Dubai AI Campus added a female-founder accelerator. Hub71 runs an AI programme with Mastercard.",
+   "zones": ["adgm", "sharjah", "difc", "hub71"]}
+ ],
+ "recommendations": [
+  {"title": "Name a flagship AI proposition for trade and commodities",
+   "text": "Turn the Future of Trade finding (AI drives 43% of trade growth) into a member-facing programme with measurable targets, as DIFC and ADGM have done."},
+  {"title": "Publish DMCC's own AI adoption results",
+   "text": "ADGM now quotes 25 AI-enabled functions and 5,000 hours saved. Equivalent metrics for DMCC member services would neutralise that comparison."},
+  {"title": "Offer members access to AI compute through partners",
+   "text": "Innovation City shows that GPU access is a differentiator. A partnership for GPU credits or sovereign compute would cost little and match the move."},
+  {"title": "Lead on AI governance from the AI & Agentics Council",
+   "text": "DMCC's council with Deloitte is a unique asset. Pair it with a talent programme with a public target to match peers' skills numbers."}
+ ]
+}

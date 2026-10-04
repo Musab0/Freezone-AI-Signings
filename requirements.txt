@@ -1,0 +1,4 @@
+# The core scraper is stdlib-only. These add:
+anthropic>=0.70      # optional Claude enrichment (only used when ANTHROPIC_API_KEY is set)
+pydantic>=2          # structured output schema for the Claude step
+playwright>=1.45     # headless-browser fallback for sites behind bot protection / JS rendering

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How It Works</title>
+<meta name="description" content="Architecture, reliability, coverage, security and cost of the Free Zone AI Watch pipeline.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Free Zone AI Watch</a>
+    <nav aria-label="Pages"><a href="./">Briefing</a><a href="explore.html">Explore</a><a href="how-it-works.html" aria-current="page">How it works</a></nav>
+    <span class="meta" id="updated">Loading...</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">For technology review</div>
+    <h1>How the briefing is produced, and how it stays reliable</h1>
+    <p class="lede">A small, auditable pipeline. It reads only public sources, stores flat files in the Git repository, needs no servers or database, and costs close to nothing to run. Every source has several independent ways in, and every failure is surfaced.</p>
+  </section>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section class="panel" aria-labelledby="arch-h">
+    <div class="panel-head"><h2 id="arch-h">Architecture</h2><span class="hint">Runs twice daily (08:07 and 18:07 Dubai time) as a scheduled job</span></div>
+    <div class="scroll">
+    <svg class="arch" viewBox="0 0 1040 330" role="img" aria-label="Pipeline: sources are collected through three fetch tiers, classified, optionally reviewed by Claude, stored in Git and published as static pages, RSS and email, with health monitoring raising GitHub issues.">
+      <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+      <rect class="box" x="10" y="20" width="200" height="290" rx="10"/>
+      <text x="26" y="46" font-weight="700">Sources</text>
+      <text x="26" y="74">24 free-zone newsrooms</text><text class="small" x="26" y="92">RSS · listing page · sitemap</text>
+      <text x="26" y="124">Government agencies</text><text class="small" x="26" y="142">WAM, Abu Dhabi Media Office</text>
+      <text x="26" y="174">11 regional outlets</text><text class="small" x="26" y="192">RSS feeds</text>
+      <text x="26" y="224">News search</text><text class="small" x="26" y="242">Google / Bing, per zone and</text><text class="small" x="26" y="258">per domain</text>
+      <rect class="box hl" x="250" y="20" width="190" height="130" rx="10"/>
+      <text x="266" y="46" font-weight="700">Fetch (3 tiers)</text>
+      <text x="266" y="72">1  Plain HTTP + retries</text><text x="266" y="96">2  Headless browser</text><text x="266" y="120">3  Reader proxy</text>
+      <text class="small" x="266" y="140">bot walls &amp; JS pages handled</text>
+      <rect class="box" x="250" y="180" width="190" height="130" rx="10"/>
+      <text x="266" y="206" font-weight="700">Health monitor</text>
+      <text x="266" y="230">per source, per strategy</text><text x="266" y="254">alert after 2 failed runs</text><text class="small" x="266" y="278">opens / closes a GitHub issue</text><text class="small" x="266" y="294">automatically</text>
+      <rect class="box" x="480" y="20" width="180" height="130" rx="10"/>
+      <text x="496" y="46" font-weight="700">Classify</text>
+      <text x="496" y="72">zone · AI relevance</text><text x="496" y="96">type of move · partners</text><text x="496" y="120">signal score 0–10</text><text class="small" x="496" y="140">dedupe across sources</text>
+      <rect class="box" x="480" y="180" width="180" height="130" rx="10"/>
+      <text x="496" y="206" font-weight="700">Claude review</text><text class="small" x="496" y="226">(optional, API key)</text>
+      <text x="496" y="252">drops noise, writes</text><text x="496" y="274">summary + DMCC angle</text>
+      <rect class="box" x="700" y="20" width="150" height="290" rx="10"/>
+      <text x="716" y="46" font-weight="700">Store (Git)</text>
+      <text x="716" y="74">items.json</text><text x="716" y="98">state.json</text><text x="716" y="122">health.json</text><text x="716" y="146">daily digests</text>
+      <text class="small" x="716" y="180">full history and</text><text class="small" x="716" y="196">audit trail in commits</text>
+      <rect class="box hl" x="890" y="20" width="140" height="290" rx="10"/>
+      <text x="906" y="46" font-weight="700">Publish</text>
+      <text x="906" y="74">Briefing page</text><text x="906" y="98">Explorer</text><text x="906" y="122">RSS feed</text><text x="906" y="146">Email digest</text><text x="906" y="170">GitHub issue</text>
+      <text class="small" x="906" y="204">static site on</text><text class="small" x="906" y="220">GitHub Pages</text>
+      <path class="flow" d="M210,85 H246"/><path class="flow" d="M440,85 H476"/><path class="flow" d="M345,150 V176"/>
+      <path class="flow" d="M570,150 V176"/><path class="flow" d="M660,245 H696"/><path class="flow" d="M660,85 H696"/><path class="flow" d="M850,165 H886"/>
+    </svg>
+    </div>
+  </section>
+
+  <section class="grid g2" style="align-items:start">
+    <div class="panel" aria-labelledby="rel-h">
+      <h2 id="rel-h" style="margin-bottom:8px">Reliability model</h2>
+      <div class="tiers">
+        <div class="layer"><b>Several ways into every source</b><span>RSS, the newsroom listing page, the sitemap and domain-restricted news search all run, and their results are merged. If one breaks, the others still deliver.</span></div>
+        <div class="layer"><b>Independent second path</b><span>WAM and the Abu Dhabi Media Office republish most free-zone releases, so they are collected even if a zone's own site is down.</span></div>
+        <div class="layer"><b>Three fetch tiers</b><span>Plain HTTP with retries and backoff, then a headless browser, then a rendering reader proxy. A newsroom that loads but shows no article links is re-rendered before it counts as a failure.</span></div>
+        <div class="layer"><b>Redesigns are detected</b><span>A page that loads but matches no article links is counted as a failure, so a site redesign raises an alert instead of going silent.</span></div>
+        <div class="layer"><b>Self-healing state</b><span>URLs already seen are remembered. Failed article pages are retried on the next two runs, and a missed run is caught up automatically (up to 30 days).</span></div>
+        <div class="layer"><b>Alerts</b><span>After 2 consecutive failures, or when a newsroom is silent longer than its normal rhythm, a GitHub issue opens and the digest flags it. Both clear themselves on recovery.</span></div>
+      </div>
+    </div>
+    <div class="panel" aria-labelledby="sec-h">
+      <h2 id="sec-h" style="margin-bottom:8px">Security, compliance and cost</h2>
+      <div class="tiers">
+        <div class="layer"><b>Data handled</b><span>Public web content only. No personal data, no logins, no member data.</span></div>
+        <div class="layer"><b>Secrets</b><span>API key and SMTP details live in GitHub encrypted secrets. Nothing sensitive is stored in the repository.</span></div>
+        <div class="layer"><b>Good-citizen crawling</b><span>Respects robots.txt paths, 1 request per second per site, and a small daily volume (a few hundred requests).</span></div>
+        <div class="layer"><b>Third parties</b><span>Google/Bing News RSS (personal-use terms; use a licensed news API for wide internal distribution), Jina Reader as the last-resort fetch tier (can be switched off), and Claude (optional).</span></div>
+        <div class="layer"><b>Running cost</b><span>Hosting and scheduling: $0 (GitHub). Claude review: roughly $5–20 a month at current volumes; it is optional.</span></div>
+        <div class="layer"><b>Hosting choice</b><span>Public GitHub Pages for the demo. For confidential use, move the same static folder behind SSO (Azure Static Web Apps or an internal web server) with no code changes.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="cov-h">
+    <div class="panel-head"><h2 id="cov-h">Source coverage</h2><span class="hint" id="cov-sum">Generated from the source registry in the code</span></div>
+    <div class="scroll"><table class="data" id="coverage"></table></div>
+  </section>
+
+  <section class="panel" aria-labelledby="hl-h">
+    <div class="panel-head"><h2 id="hl-h">Source health</h2><span class="hint" id="health-sum"></span></div>
+    <div id="alerts"></div>
+    <div id="health" class="health"></div>
+  </section>
+
+  <section class="grid g2" style="align-items:start">
+    <div class="panel" aria-labelledby="q-h">
+      <h2 id="q-h" style="margin-bottom:8px">Quality and testing</h2>
+      <div class="tiers">
+        <div class="layer"><b>36 automated tests</b><span>Parsers, fetch fallbacks, baseline and retry logic, health alerts, a full end-to-end daily run, and real-URL regression samples captured from 23 live sites.</span></div>
+        <div class="layer"><b>Live source check</b><span>A separate job tests every source against the real sites on each code change and every Monday, and fails if any source is completely down.</span></div>
+        <div class="layer"><b>Analyst verification</b><span>Items marked <span class="tag ver">verified</span> were checked by hand against the source page: headline, date and key figures.</span></div>
+      </div>
+    </div>
+    <div class="panel" aria-labelledby="lim-h">
+      <h2 id="lim-h" style="margin-bottom:8px">Known limitations and roadmap</h2>
+      <div class="tiers">
+        <div class="layer"><b>Scheduler blocked</b><span>GitHub Actions does not start jobs on the current account. The site is hosted without it, but daily automatic refresh needs Actions enabled or another scheduler (Azure Function, internal cron).</span></div>
+        <div class="layer"><b>Hard sites</b><span>DAFZ and DIEZ block automated clients. They are covered through the browser tier, WAM and news search.</span></div>
+        <div class="layer"><b>Next</b><span>Arabic-language sources, a Teams channel post, analyst feedback buttons to tune relevance, and deal-value extraction.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Source code, tests and the full plan are in the repository (README.md and PLAN.md). Runbook: when a source-health issue opens, check the failing strategy in data/HEALTH.md. A changed URL pattern is fixed in tracker/sources.py, with a sample added to tests/test_real_sites.py.</p>
+</main>
+<script src="hiw.js"></script>
+</body>
+</html>
