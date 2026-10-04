@@ -9,7 +9,7 @@ from . import config, health
 from .classify import ZONES_BY_ID
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-SITE_DIR = os.path.join(ROOT, "site")
+SITE_DIR = os.path.join(ROOT, "docs")
 DIGEST_DIR = os.path.join(ROOT, "digests")
 
 
@@ -19,7 +19,14 @@ def zone_names(item):
 
 def write_site_data(data, now, hist=None):
     hist = hist or {"sources": {}}
+    insights_path = os.path.join(ROOT, "data", "insights.json")
+    insights = None
+    if os.path.exists(insights_path):
+        with open(insights_path, encoding="utf-8") as fh:
+            insights = json.load(fh)
     payload = {
+        "insights": insights,
+        "coverage": coverage(),
         "health": {
             "alerts": health.alerts(hist, now),
             "sources": [{"id": k, "name": v.get("name", k), "status": v.get("status"), "last_ok": v.get("last_ok"),
@@ -36,6 +43,23 @@ def write_site_data(data, now, hist=None):
     os.makedirs(os.path.join(SITE_DIR, "data"), exist_ok=True)
     with open(os.path.join(SITE_DIR, "data", "items.json"), "w", encoding="utf-8") as fh:
         json.dump(payload, fh, ensure_ascii=False, separators=(",", ":"))
+
+
+def coverage():
+    """Source coverage matrix for the 'How it works' page, generated from tracker/sources.py."""
+    from . import sources
+    rows = []
+    for s in sources.OFFICIAL:
+        rows.append({"id": s["id"], "zone": s["zone"], "name": s["name"], "domain": s["domain"], "kind": "Official newsroom",
+                     "rss": bool(s.get("rss")), "listing": bool(s.get("listing")), "sitemap": bool(s.get("sitemap")),
+                     "search": True})
+    for a in sources.AGGREGATORS:
+        rows.append({"id": a["id"], "zone": None, "name": a["name"], "domain": a["domain"], "kind": "Government news agency",
+                     "rss": False, "listing": False, "sitemap": True, "search": False})
+    for f in sources.OUTLET_FEEDS:
+        rows.append({"id": f["id"], "zone": None, "name": f["name"], "domain": f["url"].split("/")[2].removeprefix("www."),
+                     "kind": "News outlet", "rss": True, "listing": False, "sitemap": False, "search": False})
+    return rows
 
 
 def write_feed(data, now, site_url=""):

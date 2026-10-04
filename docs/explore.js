@@ -3,7 +3,7 @@
   const $ = (id) => document.getElementById(id);
   const DAY = 864e5;
   const LEADERS = new Set(["difc", "adgm"]);
-  const state = { q: "", zone: "", period: 30, sort: "date", leaders: false, self: false, cats: new Set() };
+  const state = { q: "", zone: "", period: 0, sort: "date", leaders: false, self: false, cats: new Set() };
   let DATA = null, ZONES = {};
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -85,7 +85,7 @@
       return `<li class="it">
         <div class="date">${fmtDate(i.published)}<br><span class="sig ${i.score >= 7 ? "hi" : ""}" title="Signal score">signal ${i.score}</span></div>
         <div>
-          <div class="tags">${zoneTags}<span class="tag cat">${esc(i.category)}</span></div>
+          <div class="tags">${zoneTags}<span class="tag cat">${esc(i.category)}</span>${i.verified ? '<span class="tag ver" title="Headline, date and facts checked on the source page">verified</span>' : ""}</div>
           <h3><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)}</a></h3>
           <div class="src">${esc(i.source)}${also}${partners.length ? " · with " + esc(partners.join(", ")) : ""}</div>
           ${i.ai_summary ? `<p>${esc(i.ai_summary)}</p>` : ""}

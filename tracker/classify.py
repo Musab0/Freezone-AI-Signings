@@ -68,7 +68,7 @@ def find_players(text):
 
 CATEGORY_WEIGHT = {
     "Partnership / MoU": 3, "Adoption & Deployment": 3, "Product & Launch": 3, "Investment & Funding": 3,
-    "Regulation & Policy": 2, "Programmes & Ecosystem": 2, "News & Commentary": 0,
+    "Regulation & Policy": 2, "Company Attraction": 2, "Programmes & Ecosystem": 2, "News & Commentary": 0,
 }
 
 

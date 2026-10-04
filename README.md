@@ -1,5 +1,7 @@
 # Free Zone AI Watch
 
+**Live site:** https://musab0.github.io/Freezone-AI-Signings/ ([Briefing](https://musab0.github.io/Freezone-AI-Signings/) · [Explore](https://musab0.github.io/Freezone-AI-Signings/explore.html) · [How it works](https://musab0.github.io/Freezone-AI-Signings/how-it-works.html)). Presentation plan: [PLAN.md](PLAN.md).
+
 A daily tracker of **AI contracts, MoUs, adoption, product launches, investment and regulation announced by UAE free zones**. It focuses on the leaders (DIFC and ADGM) so that DMCC knows what competitors are doing.
 
 Twice a day (08:07 and 18:07 Dubai time) a GitHub Action:
@@ -49,8 +51,8 @@ DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "In
 ## Setup (one time)
 
 1. Merge this branch into `main`. The scheduled workflow only runs from the default branch.
-2. **Make sure GitHub Actions can run on this repo:** Settings → Actions → General → "Allow all actions". On a private repo, check that the account has Actions minutes and no billing hold.
-3. **Settings → Pages → Build and deployment → Source: GitHub Actions.** On private repos, Pages needs a paid GitHub plan. If you don't have one, the dated digests in `digests/` still work.
+2. **Hosting:** Settings → Pages → Build and deployment → Source: **Deploy from a branch**, Branch: `main`, Folder: `/docs`. The site is plain static files, so no build step or Actions minutes are needed.
+3. **Daily refresh:** this needs GitHub Actions to run on the repo (Settings → Actions → General → "Allow all actions", and no billing hold on the account). The workflow regenerates `docs/` and commits it, and Pages republishes it automatically.
 4. Optional settings under Settings → Secrets and variables → Actions:
 
 | Name | Kind | Purpose |
@@ -71,13 +73,25 @@ All watch-list settings are in [`tracker/config.py`](tracker/config.py):
 - [`tracker/sources.py`](tracker/sources.py): official newsrooms (listing URL, article URL pattern, sitemap, RSS) and outlet feeds. When you change a pattern, add a real URL to `tests/test_real_sites.py`.
 - Claude model: set the `TRACKER_MODEL` env var (default `claude-opus-5-5`).
 
+## Verified data and analyst notes
+
+- `data/seed.json`: analyst-verified announcements. Each headline, date and key fact was checked on the source page. Load or refresh them with `python -m tracker.seed`.
+- `data/insights.json`: the briefing's headline, findings and recommendations. Edit it before each leadership briefing; the page picks it up on the next publish.
+
+## Runbook: when a source-health issue opens
+
+1. Open `data/HEALTH.md` (or the issue). It names the source and the failing strategy (`listing:`, `sitemap:`, `rss:`, `articles`).
+2. Run `python -m tracker.check <source-id>` locally to reproduce.
+3. If the site changed its URL scheme, update the source's `pattern` / `listing` in `tracker/sources.py` and add a real URL to `tests/test_real_sites.py`.
+4. If the site blocks automated clients, nothing is lost while other strategies are green (status `degraded`). Escalate only if the source is `down`.
+
 ## Run locally
 
 ```bash
-python -m unittest discover -s tests -t . -v                  # 28 tests, offline
+python -m unittest discover -s tests -t . -v                  # 36 tests, offline
 python -m tracker.run --no-email                              # live run (needs internet)
 python -m tracker.run --fixture tests/fixture.xml --no-email  # offline run on synthetic data
-cd site && python -m http.server                              # view dashboard at localhost:8000
+cd docs && python -m http.server                              # view the site at localhost:8000
 ```
 
 The core pipeline uses only the Python standard library. `requirements.txt` is needed only for the Claude step.

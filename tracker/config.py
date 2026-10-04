@@ -78,6 +78,8 @@ CATEGORIES = [
                           r"alliance|joint venture|teams? up|join forces|strategic tie[- ]?up|cooperation)\b"),
     ("Investment & Funding", r"\b(invest\w*|fund\w*|raises?|raised|capital|venture|\$\s?\d|USD\s?\d|AED\s?\d|"
                              r"\d+\s?(?:million|billion|bn|mn)|acqui\w+|stake)\b"),
+    ("Company Attraction", r"\b(opens? (?:an? )?(?:new )?(?:office|base|headquarters|hq)|regional (?:headquarters|base|hub)|"
+                           r"expands? (?:its )?(?:presence|footprint)|sets? up (?:in|its)|relocat\w*|moves? (?:its )?(?:hq|headquarters))\b"),
     ("Regulation & Policy", r"\b(regulat\w*|framework|guidance|guideline\w*|law|legislat\w*|sandbox|"
                             r"governance|consultation paper|rulebook|licen[cs]e regime|AI licen[cs]e|code of conduct)\b"),
     ("Adoption & Deployment", r"\b(deploy\w*|adopt\w*|implement\w*|roll(?:s|ed)? out|integrat\w*|digiti[sz]\w*|"

@@ -255,3 +255,21 @@ class JsListingTest(unittest.TestCase):
         result = run.health["testzone"]["listing:https://www.example.ae/news"]
         self.assertTrue(result["ok"])
         self.assertEqual((result["count"], result["via"]), (2, "browser"))
+
+
+class RobotsTest(unittest.TestCase):
+    def test_disallowed_paths_are_not_fetched(self):
+        from tracker import http
+        f = http.Fetcher(use_browser=False, reader_proxy="")
+        calls = []
+
+        def fake_http(url):
+            calls.append(url)
+            if url.endswith("/robots.txt"):
+                return Response(url, 200, "User-agent: *\nDisallow: /private/\n", url)
+            return Response(url, 200, "<html>" + "ok " * 900 + "</html>", url)
+        f._http = fake_http
+        self.assertEqual(f.get("https://zone.example/private/page").error, "disallowed by robots.txt")
+        self.assertTrue(f.get("https://zone.example/news/item").ok)
+        self.assertEqual(calls.count("https://zone.example/robots.txt"), 1)   # cached per host
+        self.assertTrue(f.allowed("https://news.google.com/rss/search?q=x"))

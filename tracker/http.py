@@ -13,6 +13,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import urllib.robotparser
 import zlib
 from dataclasses import dataclass
 
@@ -83,6 +84,8 @@ class Fetcher:
 
     def __init__(self, timeout=30, retries=3, use_browser=True, min_host_interval=1.0, reader_proxy=None):
         self.timeout = timeout
+        self.check_robots = os.environ.get("RESPECT_ROBOTS", "1") != "0"
+        self._robots = {}
         self.reader_proxy = os.environ.get("READER_PROXY", "https://r.jina.ai/") if reader_proxy is None else reader_proxy
         self.retries = retries
         self.use_browser = use_browser
@@ -182,7 +185,30 @@ class Fetcher:
         except Exception as exc:
             return Response(url, 0, "", url, via="reader", error=f"reader: {exc}")
 
+    # Search engines' RSS endpoints are designed for feed readers; robots.txt is checked for every site we crawl.
+    ROBOTS_EXEMPT = ("news.google.com", "www.bing.com", "r.jina.ai")
+
+    def allowed(self, url):
+        """robots.txt check (cached per host). Unreachable or missing robots.txt means allowed."""
+        parts = urllib.parse.urlsplit(url)
+        if parts.netloc in self.ROBOTS_EXEMPT or parts.path.endswith("robots.txt"):
+            return True
+        with self._host_lock:
+            rp = self._robots.get(parts.netloc)
+        if rp is None:
+            rp = urllib.robotparser.RobotFileParser()
+            resp = self._http(f"{parts.scheme}://{parts.netloc}/robots.txt") if self.check_robots else None
+            if resp is not None and resp.ok:
+                rp.parse(resp.text.splitlines())
+            else:
+                rp.allow_all = True
+            with self._host_lock:
+                self._robots[parts.netloc] = rp
+        return rp.can_fetch(BROWSER_UA, url)
+
     def get(self, url, allow_browser=True):
+        if self.check_robots and not self.allowed(url):
+            return Response(url, 0, "", url, error="disallowed by robots.txt")
         resp = self._http(url)
         blocked = looks_blocked(resp.status, resp.text)
         if resp.ok and not blocked:
