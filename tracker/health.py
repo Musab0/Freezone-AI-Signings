@@ -19,6 +19,7 @@ SOURCE_NAMES = {s["id"]: s["name"] for s in sources.OFFICIAL}
 SOURCE_NAMES.update({f"outlet:{f['id']}": f["name"] for f in sources.OUTLET_FEEDS})
 SOURCE_NAMES.update({f"zone-search:{z['id']}": f"News search: {z['name']}" for z in config.ZONES})
 SOURCE_NAMES.update({f"outlet-search:{d}": f"News search: {d}" for d in sources.OUTLET_SEARCH_DOMAINS})
+SOURCE_NAMES.update({f"agg:{a['id']}": a["name"] for a in sources.AGGREGATORS})
 SILENCE = {s["id"]: s.get("max_silence_days") for s in sources.OFFICIAL}
 
 

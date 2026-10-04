@@ -194,3 +194,64 @@ class NoSitemapTest(unittest.TestCase):
         run = collect.Run(FakeFetcher(OfficialSourceTest().pages(2)), {}, NOW)
         run.official(SRC)
         self.assertFalse(any(k.startswith("sitemap") for k in run.health["testzone"]))
+
+
+NEWS_SITEMAP = """<?xml version="1.0"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+<url><loc>https://www.wam.ae/en/article/c2knrno-dubai-commercity-launches-ai-logistics</loc>
+<news:news><news:publication_date>2026-10-04T08:00:00+04:00</news:publication_date>
+<news:title>Dubai CommerCity launches AI logistics platform with Microsoft</news:title></news:news></url>
+<url><loc>https://www.wam.ae/en/article/17gix01-austria-retain-nations-league-group-lead</loc>
+<news:news><news:publication_date>2026-10-04T07:00:00+04:00</news:publication_date>
+<news:title>Austria retain Nations League group lead</news:title></news:news></url>
+</urlset>"""
+
+
+class AggregatorTest(unittest.TestCase):
+    def test_news_sitemap_prefilters_and_fetches_only_relevant(self):
+        agg = {"id": "wam", "name": "WAM", "domain": "wam.ae", "news_sitemaps": ["https://www.wam.ae/en/sitemap/news.xml"]}
+        f = FakeFetcher({"https://www.wam.ae/en/sitemap/news.xml": NEWS_SITEMAP,
+                         "https://www.wam.ae/en/article/c2knrno-dubai-commercity-launches-ai-logistics":
+                             article_page("x", body="Dubai CommerCity, part of DIEZ, deployed AI.")})
+        state = {}
+        run = collect.Run(f, state, NOW)
+        run.aggregator(agg)
+        self.assertEqual([i["title"] for i in run.items], ["Dubai CommerCity launches AI logistics platform with Microsoft"])
+        self.assertEqual(run.items[0]["published"], "2026-10-04T04:00:00+00:00")
+        self.assertNotIn("https://www.wam.ae/en/article/17gix01-austria-retain-nations-league-group-lead", f.calls)
+        run2 = collect.Run(FakeFetcher(f.pages), state, NOW)   # nothing new second time
+        run2.aggregator(agg)
+        self.assertEqual(run2.items, [])
+
+    def test_prefilter(self):
+        self.assertTrue(collect.prefilter("hub71-startup-raises-seed"))
+        self.assertTrue(collect.prefilter("uae-oncology-conference-calls-for-greater-use-ai"))
+        self.assertFalse(collect.prefilter("austria-retain-nations-league-group-lead"))
+        self.assertFalse(collect.prefilter("maintenance-of-substations"))  # "ai" only as whole word
+
+
+class FetcherFallbackTest(unittest.TestCase):
+    def test_falls_through_http_then_browser_then_reader(self):
+        from tracker import http
+        f = http.Fetcher(use_browser=True, reader_proxy="https://reader.example/")
+        f._http = lambda url: Response(url, 403, "Forbidden", url, error="HTTP 403")
+        f._browser_get = lambda url: Response(url, 200, "<title>Just a moment...</title>", url, via="browser")
+        f._reader_get = lambda url: Response(url, 200, "<html>" + "real page " * 800 + "</html>", url, via="reader")
+        self.assertEqual(f.get("https://blocked.example/news").via, "reader")
+        f._reader_get = lambda url: None
+        r = f.get("https://blocked.example/news")
+        self.assertFalse(r.ok)
+        self.assertEqual(r.error, "HTTP 403")
+
+
+class JsListingTest(unittest.TestCase):
+    def test_empty_listing_is_rendered_before_failing(self):
+        class Renderer(FakeFetcher):
+            def render(self, url):
+                return Response(url, 200, listing(2), url, via="browser")
+        f = Renderer({"https://www.example.ae/news": "<html><main><div id='app'></div></main></html>"})
+        run = collect.Run(f, {}, NOW)
+        run.official(SRC)
+        result = run.health["testzone"]["listing:https://www.example.ae/news"]
+        self.assertTrue(result["ok"])
+        self.assertEqual((result["count"], result["via"]), (2, "browser"))

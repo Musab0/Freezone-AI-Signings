@@ -62,11 +62,17 @@ OFFICIAL = [
      "listing": ["https://www.dubaisouth.ae/en/newsroom"],
      "pattern": r"dubaisouth\.ae/en/newsroom/[^/?#]+$",
      "sitemap": "https://www.dubaisouth.ae/sitemap.xml", "max_silence_days": 45},
-    {"id": "diez", "zone": "diez", "name": "DIEZ / DSO / DAFZ", "domain": "diez.ae",
-     "listing": ["https://www.diez.ae/media-centre", "https://www.dso.ae/en/media-centre/news",
-                 "https://www.dafz.ae/en/media-centre/news"],
-     "pattern": r"(?:diez|dso|dafz)\.ae/[^?#]*(?:news|media|press)[^?#]*/[^/?#]{14,}/?$",
-     "sitemap": "auto", "extra_domains": ["dso.ae", "dafz.ae"], "max_silence_days": 45},
+    # DSO's press page lists its own /w/ articles and links recent ones straight to the Dubai Media
+    # Office and WAM, so those links are accepted too.
+    {"id": "dso", "zone": "diez", "name": "Dubai Silicon Oasis (DIEZ)", "domain": "dso.ae",
+     "listing": ["https://www.dso.ae/press"],
+     "pattern": r"(?:dso\.ae/w/[^/?#]+$|mediaoffice\.ae/en/news/\d{4}/[^?#]+$|wam\.ae/en/article/[^/?#]+$)",
+     "max_silence_days": 60},
+    # DAFZ / DIEZ sites block automated clients; the browser fallback is tried, search always runs.
+    {"id": "diez", "zone": "diez", "name": "DIEZ / DAFZ", "domain": "diez.ae",
+     "listing": ["https://www.dafz.ae/en/newsroom"],
+     "pattern": r"(?:diez|dafz)\.ae/[^?#]*(?:news|media|press)[^?#]*/[^/?#]{14,}/?$",
+     "extra_domains": ["dafz.ae"]},
     {"id": "meydan", "zone": "meydan", "name": "Meydan Free Zone", "domain": "meydanfz.ae",
      "listing": ["https://www.meydanfz.ae/news"],
      "pattern": r"meydanfz\.ae/news/[^/?#]+$",
@@ -76,12 +82,18 @@ OFFICIAL = [
      "pattern": r"ifza\.com/en/(?!category|tag|page|business-setup|about)[a-z0-9-]{20,}/?$",
      "sitemap": "https://ifza.com/en/post-sitemap.xml", "max_silence_days": 90},
     # No public sitemap (DWTC 404, DHCC 403): covered by domain-restricted news search only.
-    {"id": "dwtc", "zone": "dwtc", "name": "DWTC", "domain": "dwtc.com"},
-    {"id": "dhcc", "zone": "dhcc", "name": "Dubai Healthcare City", "domain": "dhcc.ae"},
+    {"id": "dwtc", "zone": "dwtc", "name": "DWTC Press", "domain": "dwtc.com",
+     "listing": ["https://www.dwtc.com/en/press/"],
+     "pattern": r"dwtc\.com/en/press/[^/?#]+/?$", "max_silence_days": 60},
+    # DHCC's news list is rendered by script; the browser fallback renders it, article pages are plain HTML.
+    {"id": "dhcc", "zone": "dhcc", "name": "Dubai Healthcare City", "domain": "dhcc.ae",
+     "listing": ["https://www.dhcc.ae/media/news"],
+     "pattern": r"dhcc\.ae/(?:en/)?media/news/[^/?#]+$"},
     # ---- Abu Dhabi
-    # kezad.ae was unreachable from outside the UAE in Oct 2026; sitemap is tried, search always runs.
-    {"id": "kezad", "zone": "kezad", "name": "KEZAD", "domain": "kezad.ae",
-     "sitemap": "auto", "pattern": GENERIC_NEWS_PATTERN},
+    {"id": "kezad", "zone": "kezad", "name": "KEZAD Group", "domain": "kezadgroup.com",
+     "listing": ["https://www.kezadgroup.com/news-and-media/"],
+     "pattern": r"kezadgroup\.com/news-and-media/\d{4}/\d{2}/\d{2}/[^/?#]+/?$",
+     "sitemap": "auto", "extra_domains": ["kezad.ae"], "max_silence_days": 90},
     {"id": "masdar", "zone": "masdar", "name": "Masdar Newsroom", "domain": "masdar.ae",
      "listing": ["https://masdar.ae/en/news/newsroom"],
      "pattern": r"masdar\.ae/en/news/newsroom/[^/?#]+$",
@@ -98,7 +110,9 @@ OFFICIAL = [
      "listing": ["https://rakez.com/en/media-centre/news-and-events/news"],
      "pattern": r"rakez\.com/en/media-centre/news-detail/articleid/\d+/[^/?#]+$",
      "sitemap": "https://rakez.com/sitemap.xml", "max_silence_days": 45},
-    {"id": "rakinc", "zone": "rakinc", "name": "RAK Innovation City", "domain": "rakinc.ae"},
+    {"id": "rakinc", "zone": "rakinc", "name": "Innovation City (RAK)", "domain": "innovationcity.com",
+     "listing": ["https://innovationcity.com/news"],
+     "pattern": r"innovationcity\.com/news/[^/?#]+$", "sitemap": "auto", "max_silence_days": 90},
     {"id": "srtip", "zone": "sharjah", "name": "SRTI Park", "domain": "srtip.ae",
      "rss": ["https://srtip.ae/feed/"], "listing": ["https://srtip.ae/news/"],
      "pattern": r"srtip\.ae/(?!news/|events|contact|careers|leadership|rules|freezone|why-|about|saia|soilab|"
@@ -111,6 +125,16 @@ OFFICIAL = [
     {"id": "afz", "zone": "ajman", "name": "Ajman Free Zone", "domain": "afz.gov.ae",
      "pattern": r"afz\.gov\.ae/en/resources/blogs/\d{4}/[^?#]+\.html$",
      "sitemap": "https://afz.gov.ae/sitemap.xml", "extra_domains": ["afz.ae"]},
+]
+
+# Government news agencies republish nearly every announcement made by Dubai / Abu Dhabi bodies,
+# including free zones, and publish Google News sitemaps (headline + timestamp for every article
+# of the last ~48h). They are an independent second path to every zone's news.
+AGGREGATORS = [
+    {"id": "wam", "name": "WAM (Emirates News Agency)", "domain": "wam.ae",
+     "news_sitemaps": ["https://www.wam.ae/en/sitemap/news.xml"]},
+    {"id": "admo", "name": "Abu Dhabi Media Office", "domain": "mediaoffice.abudhabi",
+     "news_sitemaps": ["https://www.mediaoffice.abudhabi/en/sitemap-news.xml"]},
 ]
 
 # News outlets. Feeds marked verified returned valid RSS in Oct 2026; the rest are reached

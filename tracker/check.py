@@ -34,6 +34,9 @@ def main(argv=None):
             for src in sources.OFFICIAL:
                 if src["id"] in args.only:
                     run.official(src)
+            for agg in sources.AGGREGATORS:
+                if agg["id"] in args.only:
+                    run.aggregator(agg)
         else:
             run.run_all(zone_search=False)
     finally:

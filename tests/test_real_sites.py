@@ -50,6 +50,20 @@ SAMPLES = {
                    ["https://masdarcityfreezone.com/resources/business-activities"]),
     "afz": (["https://afz.gov.ae/en/resources/blogs/2024/one-click-business-license-in-uae.html"],
             ["https://afz.gov.ae/en/resources/blogs.html", "https://afz.gov.ae/en/resources/press-kit.html"]),
+    "kezad": (["https://www.kezadgroup.com/news-and-media/2026/05/07/rox-to-establish-one-of-the-middle-easts-first-advanced-ai-manufacturing-centres-in-kezads-klp-1-musaffah/"],
+              ["https://www.kezadgroup.com/news-and-media/", "https://www.kezadgroup.com/news-and-media/page/2/",
+               "https://www.kezadgroup.com/ar/news-and-media/?noredirect=ar-AE"]),
+    "rakinc": (["https://innovationcity.com/news/innovation-city-and-iopn-launch-the-middle-east-s-first-sovereign-ai-data-center"],
+               ["https://innovationcity.com/news"]),
+    "dwtc": (["https://www.dwtc.com/en/press/dwtc-expands-smart-event-infrastructure/"],
+             ["https://www.dwtc.com/en/press/", "https://www.dwtc.com/ar/press/"]),
+    "dso": (["https://www.dso.ae/w/dubai-integrated-economic-zones-release-esg-report",
+             "https://mediaoffice.ae/en/news/2026/jun/25-06/ahmed-bin-saeed-witnesses-opening-of-new-manufacturing-unit-at-dubai-silicon-oasis",
+             "https://www.wam.ae/en/article/c0scyr7-dubai-silicon-oasis-noon-minutes-form-strategic"],
+            ["https://www.dso.ae/newsroom", "https://www.dso.ae/press", "https://www.dso.ae/events"]),
+    "dhcc": (["https://www.dhcc.ae/media/news/one-in-three-business-partners-expand-operations-as-dubai-healthcare-city-records-another-year-of-strong-growth",
+              "https://www.dhcc.ae/en/media/news/dubai-healthcare-city-authority-unveils-aed13-billion-development-plan"],
+             ["https://www.dhcc.ae/media/news", "https://www.dhcc.ae/media/newsletter"]),
 }
 
 

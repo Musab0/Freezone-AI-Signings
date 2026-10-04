@@ -264,3 +264,27 @@ def parse_sitemap(text):
 def sitemaps_from_robots(text):
     return [line.split(":", 1)[1].strip() for line in (text or "").splitlines()
             if line.lower().startswith("sitemap:")]
+
+
+def parse_news_sitemap(text):
+    """Google News sitemap -> [(loc, publication_date, title)]. Plain urlsets work too (no title)."""
+    try:
+        root = ET.fromstring(text.lstrip("\ufeff").strip().encode("utf-8"))
+    except ET.ParseError:
+        return []
+    out = []
+    for node in root:
+        if _local(node.tag) != "url":
+            continue
+        loc = date = title = None
+        for child in node.iter():
+            name = _local(child.tag)
+            if name == "loc" and child.text and loc is None:
+                loc = child.text.strip()
+            elif name in ("publication_date", "lastmod") and child.text and not date:
+                date = child.text.strip()
+            elif name == "title" and child.text:
+                title = clean(child.text)
+        if loc:
+            out.append((loc, date, title))
+    return out

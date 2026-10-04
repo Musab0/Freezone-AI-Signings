@@ -66,8 +66,14 @@ class Run:
         if not resp.ok:
             self._record(src["id"], f"listing:{url}", False, 0, resp.error or f"HTTP {resp.status}", resp.via, url)
             return []
-        links = [l for l in article.extract_links(resp.text, resp.final_url) if pattern.search(l)]
-        links = list(dict.fromkeys(links))
+        links = list(dict.fromkeys(l for l in article.extract_links(resp.text, resp.final_url) if pattern.search(l)))
+        if not links and hasattr(self.fetcher, "render") and resp.via == "http":
+            # Loaded, but the article list is drawn by JavaScript: render it and look again.
+            rendered = self.fetcher.render(url)
+            if rendered:
+                resp = rendered
+                links = list(dict.fromkeys(l for l in article.extract_links(resp.text, resp.final_url)
+                                           if pattern.search(l)))
         # Zero matches on a page that loaded means the layout or URL scheme changed: flag it.
         self._record(src["id"], f"listing:{url}", bool(links), len(links),
                      "" if links else "page loaded but no article links matched the pattern", resp.via, url)
@@ -210,6 +216,52 @@ class Run:
                 e.update(zone_hint=src["zone"], official=True)
                 self.items.append(e)
 
+    # ------------------------------------------------------------ government news agencies
+    def aggregator(self, agg):
+        """Read a news agency's Google News sitemap; open only articles whose headline/URL mentions a
+        tracked zone or AI, so a few dozen national stories a day cost a handful of page fetches."""
+        seen = self.state["seen"].setdefault(f"agg:{agg['id']}", {})
+        cutoff = self.now - self.lookback
+        entries = []
+        for url in agg["news_sitemaps"]:
+            resp = self.fetcher.get(url)
+            got = article.parse_news_sitemap(resp.text) if resp.ok else []
+            self._record(f"agg:{agg['id']}", f"news-sitemap:{url}", bool(got), len(got),
+                         "" if got else (resp.error or "no entries in news sitemap"), resp.via, url)
+            entries += got
+        todo = []
+        for loc, date, title in entries:
+            key = normalize_url(loc)
+            if key in seen:
+                continue
+            seen[key] = self.now.isoformat()
+            published = article.parse_date(date)
+            if published and published < cutoff:
+                continue
+            if prefilter(f"{title or ''} {article.title_from_url(loc)}"):
+                todo.append((loc, published, title))
+        self.new_links[f"agg:{agg['id']}"] = len(todo)
+        fetched = 0
+        for loc, published, title in todo[:MAX_ARTICLES_PER_SOURCE * 2]:
+            resp = self.fetcher.get(loc)
+            info = article.parse_article(resp.text, resp.final_url) if resp.ok else {
+                "title": "", "description": "", "published": None, "body": ""}
+            fetched += resp.ok
+            published = published or article.parse_date(info["published"])
+            self.items.append({
+                "title": title or info["title"] or article.title_from_url(loc),
+                "url": loc,
+                "summary": info["description"],
+                "body": info["body"],
+                "source": agg["name"],
+                "published": published.isoformat() if published else None,
+                "origin": f"agg:{agg['id']}",
+                "official": True,          # government wire copy of the zone's own release
+            })
+        if todo:
+            self._record(f"agg:{agg['id']}", "articles", fetched > 0, fetched,
+                         "" if fetched == len(todo[:MAX_ARTICLES_PER_SOURCE * 2]) else "some article pages failed")
+
     # ------------------------------------------------------------ search + outlets
     def search(self, query, health_id, label=None):
         out = []
@@ -259,8 +311,14 @@ class Run:
         with ThreadPoolExecutor(max_workers=6) as pool:
             for batch in pool.map(work, jobs):
                 self.items += batch
-        # Official sites run in this thread so the browser fallback is available to them.
+        # Official sites and agencies run in this thread so the browser fallback is available to them.
         if official:
+            for agg in sources.AGGREGATORS:
+                try:
+                    self.aggregator(agg)
+                except Exception as exc:
+                    log.exception("aggregator %s crashed", agg["id"])
+                    self._record(f"agg:{agg['id']}", "crash", False, 0, f"{type(exc).__name__}: {exc}")
             for src in sources.OFFICIAL:
                 try:
                     self.official(src)
@@ -268,6 +326,21 @@ class Run:
                     log.exception("source %s crashed", src["id"])
                     self._record(src["id"], "crash", False, 0, f"{type(exc).__name__}: {exc}")
         return self.items
+
+
+_PREFILTER = None
+
+
+def prefilter(text):
+    """Cheap test on a headline or URL slug: does it mention a tracked zone or AI at all?"""
+    global _PREFILTER
+    if _PREFILTER is None:
+        terms = {a.lower() for z in config.ZONES for a in z["aliases"] if len(a) >= 4 or a.isupper()}
+        terms |= {"free zone", "freezone", "ai", "artificial intelligence", "genai", "agentic",
+                  "machine learning", "data centre", "data center", "chatbot", "llm"}
+        _PREFILTER = re.compile(r"\b(?:" + "|".join(sorted((re.escape(t) for t in terms), key=len, reverse=True))
+                                + r")\b", re.I)
+    return bool(_PREFILTER.search(re.sub(r"[-_]+", " ", text or "")))
 
 
 def summarize(health):

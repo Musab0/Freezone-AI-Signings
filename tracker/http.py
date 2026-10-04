@@ -6,6 +6,7 @@ politeness, fallbacks) is uniform and tests can swap in a fake.
 
 import gzip
 import logging
+import os
 import random
 import threading
 import time
@@ -80,8 +81,9 @@ def _decode(raw, headers):
 class Fetcher:
     """Thread-safe for plain HTTP. Browser fallback is serialised behind a lock."""
 
-    def __init__(self, timeout=30, retries=3, use_browser=True, min_host_interval=1.0):
+    def __init__(self, timeout=30, retries=3, use_browser=True, min_host_interval=1.0, reader_proxy=None):
         self.timeout = timeout
+        self.reader_proxy = os.environ.get("READER_PROXY", "https://r.jina.ai/") if reader_proxy is None else reader_proxy
         self.retries = retries
         self.use_browser = use_browser
         self.min_host_interval = min_host_interval
@@ -166,18 +168,48 @@ class Fetcher:
                 return Response(url, 0, "", url, via="browser", error=f"browser: {exc}")
         return None
 
+    def _reader_get(self, url):
+        """Last resort: a public rendering proxy (default Jina Reader) that returns the page's HTML.
+        Disable with READER_PROXY="" or point it at your own instance."""
+        if not self.reader_proxy:
+            return None
+        req = urllib.request.Request(self.reader_proxy + url, headers={
+            "User-Agent": BROWSER_UA, "X-Return-Format": "html", "Accept": "text/html"})
+        try:
+            self._wait_for_host(self.reader_proxy)
+            with urllib.request.urlopen(req, timeout=max(self.timeout, 60)) as resp:
+                return Response(url, resp.status, _decode(resp.read(), resp.headers), url, via="reader")
+        except Exception as exc:
+            return Response(url, 0, "", url, via="reader", error=f"reader: {exc}")
+
     def get(self, url, allow_browser=True):
         resp = self._http(url)
         blocked = looks_blocked(resp.status, resp.text)
         if resp.ok and not blocked:
             return resp
-        if self.use_browser and allow_browser and (blocked or resp.status == 0 or not resp.text):
+        retryable = blocked or resp.status == 0 or (resp.status < 400 and not resp.text)
+        if self.use_browser and allow_browser and retryable:
             b = self._browser_get(url)
             if b and b.ok and not looks_blocked(b.status, b.text):
                 return b
+        if retryable:  # the reader proxy is plain HTTP, so it is safe from any thread
+            r = self._reader_get(url)
+            if r and r.ok and not looks_blocked(r.status, r.text):
+                return r
         if blocked and not resp.error:
             resp.error = "blocked by bot protection"
         return resp
+
+    def render(self, url):
+        """Fetch a page that needs JavaScript: headless browser first, then the reader proxy."""
+        if self.use_browser:
+            b = self._browser_get(url)
+            if b and b.ok and not looks_blocked(b.status, b.text):
+                return b
+        r = self._reader_get(url)
+        if r and r.ok and not looks_blocked(r.status, r.text):
+            return r
+        return None
 
     def close(self):
         with self._browser_lock:

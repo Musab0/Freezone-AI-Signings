@@ -4,12 +4,13 @@ A daily tracker of **AI contracts, MoUs, adoption, product launches, investment 
 
 Twice a day (08:07 and 18:07 Dubai time) a GitHub Action:
 
-1. **Scrapes 23 competitor free zone newsrooms directly.** Sources include DIFC, the DFSA, ADGM, Hub71, Dubai Internet City, Dubai Media City, Dubai Science Park, JAFZA, Dubai South, DIEZ, Meydan, IFZA, KEZAD, Masdar, twofour54, RAKEZ, SRTIP, Shams and Ajman. It also scrapes DMCC's own newsroom as a benchmark.
-2. **Reads 11 news outlet feeds.** These are Arabian Business, The National (business and tech), Khaleej Times, AGBI, TahawulTech, Intelligent CIO, ITP, Fintech News ME, Wamda and Gulf Business. Outlets with broken or bot-protected feeds (Zawya, WAM, Gulf News and others) are covered through news search restricted to their domain.
-3. **Searches Google News and Bing News** for each zone combined with AI terms.
-4. **Filters and tags each story.** The story must name a tracked zone and an AI term; official articles are checked against their full body text. Each story gets a primary category (Partnership / MoU, Investment, Regulation, Adoption, Product launch, Programmes), notable counterparties and a 0–10 *signal* score.
-5. **Optionally runs the story through Claude** (if `ANTHROPIC_API_KEY` is set). Claude removes noise, corrects the category and adds a one-line summary plus a "DMCC angle".
-6. **Dedupes** the same story across the official site, outlets and search, preferring the official copy. It then stores the result, writes a daily digest, updates the dashboard and RSS feed, and can email the digest.
+1. **Scrapes 24 competitor free zone newsrooms directly.** Sources include DIFC, the DFSA, ADGM, Hub71, Dubai Internet City, Dubai Media City, Dubai Science Park, Dubai Silicon Oasis, DAFZ, JAFZA, Dubai South, DWTC, Dubai Healthcare City, Meydan, IFZA, KEZAD, Masdar and Masdar City, twofour54, RAKEZ, RAK Innovation City, SRTIP, Shams and Ajman. It also scrapes DMCC's own newsroom as a benchmark.
+2. **Reads the government news agencies' Google News sitemaps.** WAM (Emirates News Agency) and the Abu Dhabi Media Office republish nearly every announcement made by Dubai and Abu Dhabi bodies, free zones included. That gives every zone a second path that is independent of its own website.
+3. **Reads 11 news outlet feeds.** These are Arabian Business, The National (business and tech), Khaleej Times, AGBI, TahawulTech, Intelligent CIO, ITP, Fintech News ME, Wamda and Gulf Business. Outlets with broken or bot-protected feeds (Zawya, WAM, Gulf News and others) are covered through news search restricted to their domain.
+4. **Searches Google News and Bing News** for each zone combined with AI terms.
+5. **Filters and tags each story.** The story must name a tracked zone and an AI term; official articles are checked against their full body text. Each story gets a primary category (Partnership / MoU, Investment, Regulation, Adoption, Product launch, Programmes), notable counterparties and a 0–10 *signal* score.
+6. **Optionally runs the story through Claude** (if `ANTHROPIC_API_KEY` is set). Claude removes noise, corrects the category and adds a one-line summary plus a "DMCC angle".
+7. **Dedupes** the same story across the official site, outlets and search, preferring the official copy. It then stores the result, writes a daily digest, updates the dashboard and RSS feed, and can email the digest.
 
 ## How the scraper stays reliable
 
@@ -20,7 +21,8 @@ No scraper can guarantee it never breaks: sites redesign, add bot walls or go of
 | **Several strategies per source** | Each official newsroom is read through as many of these as it supports, and the results are merged: its RSS feed, its newsroom listing page, its sitemap (found automatically from robots.txt) and domain-restricted Google/Bing News search. If one breaks, the others still deliver. |
 | **Verified patterns** | Every listing and sitemap pattern was checked against the live sites (Oct 2026). `tests/test_real_sites.py` keeps real article URLs and navigation URLs as regression samples. |
 | **Robust fetching** | A browser user agent, gzip support, retries with backoff, respect for `Retry-After`, and at most one request per host per second. |
-| **Bot walls and JavaScript pages** | Blocked or challenge pages (Cloudflare, Akamai, Incapsula) are detected and retried in a real headless Chromium browser (Playwright). |
+| **Three fetch tiers** | Every page is fetched over plain HTTP first. Blocked or challenge pages (Cloudflare, Akamai, Incapsula) are retried in a real headless Chromium browser (Playwright), and then through a rendering reader proxy (Jina Reader by default; set `READER_PROXY` to use your own, or set it empty to switch it off). A newsroom page that loads but shows no article links, because its list is drawn by JavaScript, is re-rendered before it counts as a failure. |
+| **Independent second path** | Free zone releases are also collected from the WAM and Abu Dhabi Media Office news sitemaps. A zone whose website is down or blocked is still covered whenever the agencies carry its news. |
 | **Self-healing state** | Article URLs are remembered once seen, so nothing is processed twice. Failed article pages are retried on the next two runs, then kept with a title taken from the URL rather than dropped. |
 | **Catch-up** | If a run is missed (outage, disabled Actions), the next run widens its lookback to cover the gap, up to 30 days. |
 | **Robust date extraction** | Dates are read from JSON-LD, then meta tags, then `<time>`, then the earliest date in the article text. Future dates such as event dates are ignored. When no date exists, the time the story was first seen is used. |
@@ -82,7 +84,7 @@ The core pipeline uses only the Python standard library. `requirements.txt` is n
 
 ## Limits
 
-- KEZAD's website was unreachable from outside the UAE during testing. DWTC, DHCC and RAK Innovation City publish no sitemap. These four are covered by news search only, so a release with no media pickup can be missed.
+- DAFZ and the DIEZ site block automated clients, and the Dubai Media Office (mediaoffice.ae) publishes no sitemap. These rely on the browser and reader tiers, the government agencies and news search. The health panel shows which tier is working for each source.
 - Google News and Bing RSS terms allow personal, non-commercial use. For an organisation-wide deployment, consider a licensed news API; the official newsroom scrapers don't depend on them.
 - Without Claude, tagging is keyword-based. Expect some false positives, such as a DIFC-based firm's AI news that doesn't involve DIFC itself, and occasional wrong categories.
 - Links from Google News are redirect URLs to the original article.
