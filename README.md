@@ -2,16 +2,16 @@
 
 **Live site:** https://musab0.github.io/Freezone-AI-Signings/ ([Briefing](https://musab0.github.io/Freezone-AI-Signings/) · [Explore](https://musab0.github.io/Freezone-AI-Signings/explore.html) · [How it works](https://musab0.github.io/Freezone-AI-Signings/how-it-works.html)). Presentation plan: [PLAN.md](PLAN.md).
 
-A daily tracker of **AI contracts, MoUs, adoption, product launches, investment and regulation announced by UAE free zones**. It focuses on the leaders (DIFC and ADGM) so that DMCC knows what competitors are doing.
+A daily tracker of **AI contracts, MoUs, adoption, product launches, investment and regulation announced by UAE free zones**. It covers all 56 UAE free zones across the 7 emirates (plus the Hub71 ecosystem), with extra depth on DIFC and ADGM, and describes what each zone announced without comparing or ranking them.
 
 Twice a day (08:07 and 18:07 Dubai time) a GitHub Action:
 
-1. **Scrapes 24 competitor free zone newsrooms directly.** Sources include DIFC, the DFSA, ADGM, Hub71, Dubai Internet City, Dubai Media City, Dubai Science Park, Dubai Silicon Oasis, DAFZ, JAFZA, Dubai South, DWTC, Dubai Healthcare City, Meydan, IFZA, KEZAD, Masdar and Masdar City, twofour54, RAKEZ, RAK Innovation City, SRTIP, Shams and Ajman. It also scrapes DMCC's own newsroom as a benchmark.
+1. **Scrapes 25 free zone newsrooms directly, and runs news search for every one of the 56 zones.** Sources include DIFC, the DFSA, ADGM, Hub71, Dubai Internet City, Dubai Media City, Dubai Science Park, Dubai Silicon Oasis, DAFZ, JAFZA, Dubai South, DWTC, Dubai Healthcare City, Meydan, IFZA, KEZAD, Masdar and Masdar City, twofour54, RAKEZ, RAK Innovation City, SRTIP, Shams and Ajman. DMCC's own newsroom is scraped too.
 2. **Reads the government news agencies' Google News sitemaps.** WAM (Emirates News Agency) and the Abu Dhabi Media Office republish nearly every announcement made by Dubai and Abu Dhabi bodies, free zones included. That gives every zone a second path that is independent of its own website.
 3. **Reads 11 news outlet feeds.** These are Arabian Business, The National (business and tech), Khaleej Times, AGBI, TahawulTech, Intelligent CIO, ITP, Fintech News ME, Wamda and Gulf Business. Outlets with broken or bot-protected feeds (Zawya, WAM, Gulf News and others) are covered through news search restricted to their domain.
 4. **Searches Google News and Bing News** for each zone combined with AI terms.
 5. **Filters and tags each story.** The story must name a tracked zone and an AI term; official articles are checked against their full body text. Each story gets a primary category (Partnership / MoU, Investment, Regulation, Adoption, Product launch, Programmes), notable counterparties and a 0–10 *signal* score.
-6. **Optionally runs the story through Claude** (if `ANTHROPIC_API_KEY` is set). Claude removes noise, corrects the category and adds a one-line summary plus a "DMCC angle".
+6. **Optionally runs the story through Claude** (if `ANTHROPIC_API_KEY` is set). Claude removes noise, corrects the category and adds a one-line factual summary.
 7. **Dedupes** the same story across the official site, outlets and search, preferring the official copy. It then stores the result, writes a daily digest, updates the dashboard and RSS feed, and can email the digest.
 
 ## How the scraper stays reliable
@@ -43,8 +43,8 @@ DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "In
 
 ## Dashboard
 
-- Headline numbers: new items in the last 24h, competitor items over 7 days, and DIFC and ADGM items over 30 days.
-- **Who's moving:** competitor activity by zone over 30 days. Click a zone to filter.
+- Headline numbers: new items in the last 24h, AI items over 7 days, and DIFC and ADGM items over 30 days.
+- **Who's announcing:** AI items by zone over 30 days. Click a zone to filter.
 - Feed with search, zone, period, category chips, a "DIFC & ADGM only" filter, and sorting by date or by signal.
 - `feed.xml`: subscribe in Outlook or Teams (RSS connector) to get items in your inbox or a channel.
 
@@ -57,7 +57,7 @@ DMCC's own coverage is tracked as a benchmark. It is hidden by default; tick "In
 
 | Name | Kind | Purpose |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | secret | Turns on Claude enrichment (summary, DMCC angle, noise filter) |
+| `ANTHROPIC_API_KEY` | secret | Turns on Claude enrichment (summary, noise filter) |
 | `SITE_URL` | variable | Your Pages URL, used in the RSS feed and email |
 | `DIGEST_TO` | variable | Comma-separated recipients of the daily email |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | secrets | Mail server for the digest (STARTTLS, default port 587) |
@@ -76,7 +76,7 @@ All watch-list settings are in [`tracker/config.py`](tracker/config.py):
 ## Verified data and analyst notes
 
 - `data/seed.json`: analyst-verified announcements. Each headline, date and key fact was checked on the source page. Load or refresh them with `python -m tracker.seed`.
-- `data/insights.json`: the briefing's headline, findings and recommendations. Edit it before each leadership briefing; the page picks it up on the next publish.
+- `data/insights.json`: the briefing's headline and factual findings. Edit it before each leadership briefing; the page picks it up on the next publish.
 
 ## Runbook: when a source-health issue opens
 
@@ -88,7 +88,7 @@ All watch-list settings are in [`tracker/config.py`](tracker/config.py):
 ## Run locally
 
 ```bash
-python -m unittest discover -s tests -t . -v                  # 36 tests, offline
+python -m unittest discover -s tests -t . -v                  # 37 tests, offline
 python -m tracker.run --no-email                              # live run (needs internet)
 python -m tracker.run --fixture tests/fixture.xml --no-email  # offline run on synthetic data
 cd docs && python -m http.server                              # view the site at localhost:8000

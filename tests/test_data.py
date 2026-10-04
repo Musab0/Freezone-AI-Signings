@@ -23,7 +23,8 @@ class SeedTest(unittest.TestCase):
             self.assertIn(s["category"], CATEGORIES, s["title"])
             self.assertLessEqual(datetime.fromisoformat(s["published"]), verified_on, s["title"])
             self.assertTrue(1 <= s["importance"] <= 5)
-            self.assertTrue(s["ai_summary"] and s["dmcc_angle"], s["title"])
+            self.assertTrue(s["ai_summary"], s["title"])
+            self.assertNotIn("dmcc_angle", s)
             self.assertNotIn(s["title"], titles)
             titles.add(s["title"])
         items = seed.load_seed()
@@ -37,12 +38,18 @@ class InsightsTest(unittest.TestCase):
             ins = json.load(fh)
         self.assertTrue(ins["headline"])
         self.assertGreaterEqual(len(ins["findings"]), 3)
-        self.assertGreaterEqual(len(ins["recommendations"]), 3)
+        self.assertNotIn("recommendations", ins)   # the briefing reports activity; it does not advise
         for f in ins["findings"]:
             self.assertTrue(set(f["zones"]) <= ZONE_IDS)
 
 
 class CoverageTest(unittest.TestCase):
+    def test_every_uae_free_zone_is_registered(self):
+        names = {z["id"] for z in config.ZONES if z.get("parent") is None}
+        self.assertGreaterEqual(len(names), 56)
+        self.assertEqual({z["emirate"] for z in config.ZONES},
+                         {"Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain"})
+
     def test_coverage_matrix_lists_every_registered_source(self):
         rows = publish.coverage()
         expected = len(sources.OFFICIAL) + len(sources.AGGREGATORS) + len(sources.OUTLET_FEEDS)

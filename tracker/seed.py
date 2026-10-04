@@ -24,7 +24,7 @@ def load_seed(path=None):
             "summary": s.get("ai_summary", ""), "zones": s["zones"], "category": s["category"],
             "categories": [s["category"]], "players": classify.find_players(f"{s['title']} {s.get('ai_summary', '')}"),
             "counterparties": s.get("counterparties", []), "ai_summary": s.get("ai_summary", ""),
-            "dmcc_angle": s.get("dmcc_angle", ""), "importance": s.get("importance", 3),
+            "importance": s.get("importance", 3), "date_approx": bool(s.get("date_approx")),
             "origin": "research", "official": False, "enriched": True,
             "verified": seed.get("verified_on"), "first_seen": seed.get("verified_on") + "T00:00:00+00:00",
         }
@@ -37,7 +37,11 @@ def main():
     now = collect.utcnow()
     data = store.load()
     seeded = {i["id"]: i for i in load_seed()}
-    data["items"] = [i for i in data["items"] if i["id"] not in seeded] + list(seeded.values())
+    urls = {i["url"] for i in seeded.values()}
+    # The seed file is the source of truth for hand-verified items: replace any
+    # copy of them (same id or URL) and drop verified items no longer in it.
+    data["items"] = [i for i in data["items"]
+                     if i["id"] not in seeded and i["url"] not in urls and not i.get("verified")] + list(seeded.values())
     data["items"].sort(key=lambda i: i["published"], reverse=True)
     store.save(data)
     publish.write_site_data(data, now, health.load())

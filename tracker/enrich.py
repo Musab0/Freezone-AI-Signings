@@ -17,8 +17,8 @@ BATCH_SIZE = 20
 
 CategoryName = Literal[tuple(name for name, _ in config.CATEGORIES) + (config.DEFAULT_CATEGORY,)]  # type: ignore
 
-SYSTEM = f"""You are a competitive-intelligence analyst for DMCC (Dubai Multi Commodities Centre), a UAE free zone.
-You screen news about OTHER UAE free zones (especially DIFC and ADGM) and their AI moves: contracts, MoUs,
+SYSTEM = f"""You are a market-intelligence analyst tracking UAE free zones (DIFC, ADGM, DMCC and all others).
+You screen news about the zones' AI activity: contracts, MoUs,
 partnerships, AI adoption/deployment, AI products or platforms, AI licences/regulation, AI investment, AI
 programmes/campuses. Zone ids you may use: {", ".join(z["id"] for z in config.ZONES)}.
 
@@ -31,9 +31,8 @@ For each item decide:
 - category: the single best category.
 - counterparties: named organisations on the other side of the deal (empty if none).
 - summary: one factual sentence (max 35 words) of what was announced.
-- dmcc_angle: one sentence (max 30 words) on why DMCC should care or how it could respond.
-- importance: 1 (trivia) to 5 (strategic move DMCC leadership should hear about this week).
-Base everything only on the text given; do not invent facts."""
+- importance: 1 (minor) to 5 (major, zone-wide or large-scale announcement).
+Report what was announced; do not add opinions, comparisons or recommendations. Base everything only on the text given; do not invent facts."""
 
 try:
     import anthropic
@@ -46,7 +45,6 @@ try:
         category: CategoryName
         counterparties: List[str]
         summary: str
-        dmcc_angle: str
         importance: int
 
     class Judgements(BaseModel):
@@ -110,7 +108,6 @@ def enrich(items):
             item["category"] = j.category
             item["counterparties"] = j.counterparties
             item["ai_summary"] = j.summary
-            item["dmcc_angle"] = j.dmcc_angle
             item["importance"] = max(1, min(5, j.importance))
             item["score"] = round((item["score"] + item["importance"] * 2) / 2)
     log.info("Claude enriched %d items, rejected %d", len(pending), len(rejected))

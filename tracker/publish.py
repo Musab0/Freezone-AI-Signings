@@ -35,7 +35,7 @@ def write_site_data(data, now, hist=None):
                         for k, v in sorted(hist.get("sources", {}).items())],
         },
         "generated_at": now.isoformat(),
-        "zones": [{k: z.get(k) for k in ("id", "name", "emirate", "tier", "self", "parent")} for z in config.ZONES],
+        "zones": [{k: z.get(k) for k in ("id", "name", "emirate", "tier", "self", "parent", "group")} for z in config.ZONES],
         "categories": [name for name, _ in config.CATEGORIES] + [config.DEFAULT_CATEGORY],
         "runs": data["runs"][-30:],
         "items": data["items"],
@@ -71,8 +71,6 @@ def write_feed(data, now, site_url=""):
     entries = []
     for i in competitors:
         desc = i.get("ai_summary") or i.get("summary") or ""
-        if i.get("dmcc_angle"):
-            desc += f"\n\nDMCC angle: {i['dmcc_angle']}"
         entries.append(
             "<item>"
             f"<title>{escape('[' + zone_names(i) + '] ' + i['title'])}</title>"
@@ -87,7 +85,7 @@ def write_feed(data, now, site_url=""):
         '<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>'
         "<title>UAE Free Zone AI Watch</title>"
         f"<link>{escape(site_url or 'https://github.com/musab0/freezone-ai-signings')}</link>"
-        "<description>AI deals, adoption and launches announced by UAE free zones - competitor watch for DMCC"
+        "<description>AI deals, adoption and launches announced by UAE free zones"
         "</description>"
         f"<lastBuildDate>{now.strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>"
         + "".join(entries) + "</channel></rss>\n"
@@ -105,10 +103,10 @@ def render_digest(new_items, now, alerts=()):
     own = [i for i in new_items if _is_self_only(i)]
     lines = [f"# UAE Free Zone AI Watch - {now:%d %b %Y}", ""]
     if not competitors:
-        lines += ["No new competitor AI announcements detected since the last run.", ""]
+        lines += ["No new AI announcements from other free zones since the last run.", ""]
     else:
         leaders = [i for i in competitors if {"difc", "adgm"} & set(i["zones"])]
-        lines += [f"**{len(competitors)} new competitor items** ({len(leaders)} from DIFC/ADGM).", ""]
+        lines += [f"**{len(competitors)} new AI items from other free zones** ({len(leaders)} from DIFC/ADGM).", ""]
         by_cat = {}
         for i in competitors:
             by_cat.setdefault(i["category"], []).append(i)
@@ -119,8 +117,6 @@ def render_digest(new_items, now, alerts=()):
                              f"{i['published'][:10]}_ (signal {i['score']}/10)")
                 if i.get("ai_summary"):
                     lines.append(f"  - {i['ai_summary']}")
-                if i.get("dmcc_angle"):
-                    lines.append(f"  - DMCC angle: {i['dmcc_angle']}")
             lines.append("")
     if alerts:
         lines += ["## Source health alerts", "", "These scrapers need attention (see data/HEALTH.md):", ""]
