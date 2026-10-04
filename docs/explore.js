@@ -144,7 +144,7 @@
     .then((data) => {
       DATA = data;
       data.zones.forEach((z) => { ZONES[z.id] = z; });
-      $("zone").insertAdjacentHTML("beforeend", data.zones.map((z) => `<option value="${z.id}">${esc(z.name)}${z.self ? " (own)" : ""}</option>`).join(""));
+      $("zone").innerHTML = '<option value="">All zones</option>' + (data.zones.map((z) => `<option value="${z.id}">${esc(z.name)}${z.self ? " (own)" : ""}</option>`).join(""));
       $("updated").textContent = "Updated " + new Date(data.generated_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" });
       loadPrefs(); syncControls(); renderKpis(); renderHealth(); bind(); render();
     })

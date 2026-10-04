@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Explore Announcements</title>
@@ -13,25 +12,50 @@
   <div class="wrap">
     <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Free Zone AI Watch</a>
     <nav aria-label="Pages"><a href="./">Briefing</a><a href="explore.html" aria-current="page">Explore</a><a href="how-it-works.html">How it works</a></nav>
-    <span class="meta"><span id="updated">Loading...</span> · <a href="feed.xml">RSS</a></span>
+    <span class="meta"><span id="updated">Updated 4 Oct 2026, 21:07</span> · <a href="feed.xml">RSS</a></span>
   </div>
 </header>
 
 <main class="wrap">
   <div class="hero"><div class="eyebrow">Explore</div><h1>Every tracked AI announcement</h1><p class="lede">Search and filter all collected items. Verified items are marked; automated items appear as the daily pipeline runs.</p></div>
-  <section class="kpis" id="kpis" aria-label="Headline numbers"></section>
+  <section class="kpis" id="kpis" aria-label="Headline numbers"><div class="kpi"><div class="v">0</div><div class="l">new in last 24h</div></div><div class="kpi"><div class="v">1</div><div class="l">competitor items, 7 days</div></div><div class="kpi"><div class="v">1</div><div class="l">DIFC items, 30 days</div></div><div class="kpi"><div class="v">3</div><div class="l">ADGM items, 30 days</div></div></section>
 
   <section class="panel" aria-labelledby="zones-h">
     <div class="panel-head">
       <h2 id="zones-h">Who's moving - competitor items, last 30 days</h2>
       <span class="hint">Click a zone to filter</span>
     </div>
-    <div id="zonebars" class="zonebars"></div>
+    <div id="zonebars" class="zonebars">
+      <button class="zb leader " data-z="adgm" title="Filter to ADGM">
+        <span class="zn">ADGM</span>
+        <span class="track"><span class="fill" style="width:100%"></span></span>
+        <span class="n">3</span>
+      </button>
+      <button class="zb  " data-z="masdar" title="Filter to Masdar City Free Zone">
+        <span class="zn">Masdar City Free Zone</span>
+        <span class="track"><span class="fill" style="width:33.33333333333333%"></span></span>
+        <span class="n">1</span>
+      </button>
+      <button class="zb  " data-z="diez" title="Filter to DIEZ (DSO / DAFZ / Dubai CommerCity)">
+        <span class="zn">DIEZ (DSO / DAFZ / Dubai CommerCity)</span>
+        <span class="track"><span class="fill" style="width:33.33333333333333%"></span></span>
+        <span class="n">1</span>
+      </button>
+      <button class="zb  " data-z="tecom" title="Filter to TECOM (DIC / DMC / DSP / d3 / DKP)">
+        <span class="zn">TECOM (DIC / DMC / DSP / d3 / DKP)</span>
+        <span class="track"><span class="fill" style="width:33.33333333333333%"></span></span>
+        <span class="n">1</span>
+      </button>
+      <button class="zb leader " data-z="difc" title="Filter to DIFC">
+        <span class="zn">DIFC</span>
+        <span class="track"><span class="fill" style="width:33.33333333333333%"></span></span>
+        <span class="n">1</span>
+      </button></div>
   </section>
 
   <section class="panel" aria-labelledby="health-h">
     <details id="healthbox">
-      <summary class="panel-head"><h2 id="health-h">Source health</h2><span id="health-sum" class="hint"></span></summary>
+      <summary class="panel-head"><h2 id="health-h">Source health</h2><span id="health-sum" class="hint">available after the first run</span></summary>
       <div id="alerts"></div>
       <div id="health" class="health"></div>
     </details>
@@ -40,17 +64,17 @@
   <section class="panel" aria-labelledby="feed-h">
     <div class="panel-head">
       <h2 id="feed-h">Announcements</h2>
-      <span id="count" class="hint"></span>
+      <span id="count" class="hint">17 items</span>
     </div>
     <div class="filters">
       <input id="q" type="search" placeholder="Search title, partner, source..." aria-label="Search">
-      <select id="zone" aria-label="Zone"><option value="">All zones</option></select>
+      <select id="zone" aria-label="Zone"><option value="">All zones</option><option value="difc">DIFC</option><option value="adgm">ADGM</option><option value="hub71">Hub71</option><option value="dmcc">DMCC (own)</option><option value="tecom">TECOM (DIC / DMC / DSP / d3 / DKP)</option><option value="diez">DIEZ (DSO / DAFZ / Dubai CommerCity)</option><option value="dpworld">JAFZA / Dubai South</option><option value="dwtc">DWTC Free Zone</option><option value="dhcc">Dubai Healthcare City</option><option value="meydan">Meydan Free Zone</option><option value="ifza">IFZA</option><option value="kezad">KEZAD / AD Ports</option><option value="masdar">Masdar City Free Zone</option><option value="twofour54">twofour54</option><option value="rakez">RAKEZ</option><option value="rakinc">RAK Innovation City (ex-RAK DAO)</option><option value="sharjah">Sharjah zones (SRTIP / SPC / SAIF / Shams)</option><option value="ajman">Ajman Free Zone</option><option value="fujairah">Fujairah zones</option><option value="uaq">UAQ Free Trade Zone</option></select>
       <select id="period" aria-label="Period">
         <option value="1">Last 24 hours</option>
         <option value="7">Last 7 days</option>
         <option value="30">Last 30 days</option>
         <option value="90">Last 90 days</option>
-        <option value="0" selected>All time</option>
+        <option value="0" selected="">All time</option>
       </select>
       <select id="sort" aria-label="Sort">
         <option value="date">Newest first</option>
@@ -59,9 +83,162 @@
       <label class="check"><input id="leaders" type="checkbox"> DIFC &amp; ADGM only</label>
       <label class="check"><input id="self" type="checkbox"> Include DMCC's own news</label>
     </div>
-    <div id="cats" class="chips" role="group" aria-label="Category"></div>
-    <ol id="list" class="list"></ol>
-    <p id="empty" class="empty" hidden>Nothing matches these filters yet. The tracker updates every morning; widen the period or clear filters.</p>
+    <div id="cats" class="chips" role="group" aria-label="Category"><button class="chip " data-c="Partnership / MoU" aria-pressed="false">Partnership / MoU<span class="c">2</span></button><button class="chip " data-c="Investment &amp; Funding" aria-pressed="false">Investment &amp; Funding<span class="c">1</span></button><button class="chip " data-c="Company Attraction" aria-pressed="false">Company Attraction<span class="c">3</span></button><button class="chip " data-c="Regulation &amp; Policy" aria-pressed="false">Regulation &amp; Policy<span class="c">1</span></button><button class="chip " data-c="Adoption &amp; Deployment" aria-pressed="false">Adoption &amp; Deployment<span class="c">2</span></button><button class="chip " data-c="Product &amp; Launch" aria-pressed="false">Product &amp; Launch<span class="c">1</span></button><button class="chip " data-c="Programmes &amp; Ecosystem" aria-pressed="false">Programmes &amp; Ecosystem<span class="c">6</span></button><button class="chip " data-c="News &amp; Commentary" aria-pressed="false">News &amp; Commentary<span class="c">1</span></button></div>
+    <ol id="list" class="list"><li class="it">
+        <div class="date">29 Sept<br><span class="sig " title="Signal score">signal 5</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">Masdar City Free Zone</span><span class="tag cat">Company Attraction</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.zawya.com/en/press-release/companies-news/us-based-brain-digits-opens-office-in-masdar-city-1386611" target="_blank" rel="noopener">US-based Brain Digits opens office in Masdar City to build AI solutions for the UAE and GCC</a></h3>
+          <div class="src">Zawya · with Brain Digits</div>
+          <p>The office will develop AI solutions for the UAE market as Abu Dhabi pushes to become an AI-native government.</p>
+          <p class="angle">DMCC angle: Abu Dhabi's AI-native government agenda is pulling AI vendors into Abu Dhabi zones.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">27 Sept<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">DIEZ (DSO / DAFZ / Dubai CommerCity)</span><span class="tag cat">Adoption &amp; Deployment</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://tbreak.com/dubai-mobility-labs-silicon-oasis-driverless-testing/" target="_blank" rel="noopener">RTA opens Dubai Mobility Labs at Dubai Silicon Oasis with 248 autonomous-vehicle test scenarios</a></h3>
+          <div class="src">Tbreak · with RTA, DEKRA</div>
+          <p>A testing and certification facility for autonomous mobility in Dubai Silicon Oasis, combining controlled scenarios with public-road trials; DEKRA operates it for three years.</p>
+          <p class="angle">DMCC angle: DIEZ is anchoring physical-AI and autonomy infrastructure in its zones.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">14 Sept<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">TECOM (DIC / DMC / DSP / d3 / DKP)</span><span class="tag cat">Programmes &amp; Ecosystem</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.tradingview.com/news/reuters.com,2026-09-14:newsml_Zaw7LSRnp:0-zawya-sap-puts-women-at-heart-of-uae-s-ai-ready-workforce/" target="_blank" rel="noopener">SAP and Dubai Internet City convene women leaders on building the UAE's AI-ready workforce</a></h3>
+          <div class="src">Zawya / TradeArabia · with SAP</div>
+          <p>An executive panel and youth circle at Dubai Internet City on AI and women's careers in technology, part of Emirati Women's Day.</p>
+          <p class="angle">DMCC angle: TECOM uses anchor tenants (SAP) to run AI talent events - low-cost visibility.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">11 Sept<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">DIFC</span><span class="tag cat">Programmes &amp; Ecosystem</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.edinburghnews.scotsman.com/your-world/edinburgh-entrepreneur-launches-dubai-ai-campuss-first-female-founder-accelerator-9022967" target="_blank" rel="noopener">'SHE Leads with AI': Dubai AI Campus launches its first female-founder accelerator at DIFC Innovation Hub</a></h3>
+          <div class="src">Edinburgh News · with The Power Diaspora Forum</div>
+          <p>A six-day programme with fully funded places for 30 women founders, delivered at DIFC Innovation Hub with an investor showcase; it starts 16 November 2026.</p>
+          <p class="angle">DMCC angle: Dubai AI Campus keeps adding targeted founder programmes that widen DIFC's AI talent funnel.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">8 Sept<br><span class="sig hi" title="Signal score">signal 9</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">ADGM</span><span class="tag cat">Adoption &amp; Deployment</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.prnewswire.com/news-releases/adgm-reinforces-abu-dhabis-standing-as-a-global-financial-hub-with-54-growth-in-aum-and-almost-14-000-active-licences-302872415.html" target="_blank" rel="noopener">ADGM completes phase one of in-house AI rollout: 25 business functions, 5,000+ staff hours saved a year, AED 400m roadmap to 2029</a></h3>
+          <div class="src">ADGM via PR Newswire</div>
+          <p>ADGM deployed AI across licensing, supervision and customer service; about 25% of customer enquiries are now resolved instantly, and it will invest more than AED 400m in AI, data and cyber capabilities to 2029.</p>
+          <p class="angle">DMCC angle: ADGM can now show measured, member-facing AI results. DMCC members will compare service speed directly.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">8 Sept<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">ADGM</span><span class="tag cat">Programmes &amp; Ecosystem</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.prnewswire.com/news-releases/adgm-reinforces-abu-dhabis-standing-as-a-global-financial-hub-with-54-growth-in-aum-and-almost-14-000-active-licences-302872415.html#ai-talent" target="_blank" rel="noopener">ADGM Academy launches WMI School of AI, training 544 UAE Nationals in agentic AI</a></h3>
+          <div class="src">ADGM via PR Newswire</div>
+          <p>Part of ADGM Academy's H1 2026 output of 1,607 Emiratis trained; the agentic-AI school targets the wealth-management sector.</p>
+          <p class="angle">DMCC angle: Sector-specific AI skills programmes with published numbers are becoming standard for leading zones.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">8 Sept<br><span class="sig hi" title="Signal score">signal 8</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">ADGM</span><span class="tag cat">Investment &amp; Funding</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://gulfnews.com/business/markets/adgm-assets-jump-54-workforce-nears-50000-1.500666929" target="_blank" rel="noopener">ADGM entities now hold more than USD 100bn in AI-focused investment, anchored by FSRA-licensed MGX</a></h3>
+          <div class="src">Gulf News · with MGX</div>
+          <p>ADGM positions itself as the jurisdiction of choice for institutions deploying capital into AI, alongside 54% AUM growth in H1 2026.</p>
+          <p class="angle">DMCC angle: Abu Dhabi is cornering AI capital; DMCC's angle is more naturally AI applied to trade and commodities.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">31 Aug<br><span class="sig " title="Signal score">signal 4</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">Sharjah zones (SRTIP / SPC / SAIF / Shams)</span><span class="tag cat">Programmes &amp; Ecosystem</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.shams.ae/news/details?article=More%20than%20300%20professionals%20from%2016%20government%20entities%20benefit%20from%20specialised%20AI%20programmes%20and%20workshops%20continuing%20through%20October&amp;hsLang=en" target="_blank" rel="noopener">Shams AI Club trains 300+ professionals from 16 government entities; programmes run to end of October</a></h3>
+          <div class="src">Shams Newsroom</div>
+          <p>The first phase targets 500 participants with training on prompt engineering, automation, data analysis and responsible AI.</p>
+          <p class="angle">DMCC angle: Even media free zones run structured AI-skills programmes with public targets.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">28 Jul<br><span class="sig hi" title="Signal score">signal 8</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">DIFC</span><span class="tag cat">Programmes &amp; Ecosystem</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.difc.com/whats-on/news/industry-leading-achievements-h1-2026" target="_blank" rel="noopener">DIFC sets ambition to become the world's first AI-Native financial centre; AI, FinTech and innovation firms up 39% to 1,933</a></h3>
+          <div class="src">DIFC Newsroom</div>
+          <p>In its H1 2026 results DIFC said AI will be embedded across its regulation, operations, talent and infrastructure, a transformation it expects to generate USD 3.5bn in economic value and 25,000 jobs; its Innovation Hub added 361 firms in H1.</p>
+          <p class="angle">DMCC angle: DIFC has turned AI into a whole-of-centre brand promise with hard targets - the benchmark any DMCC AI positioning will be compared against.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">23 Jul<br><span class="sig " title="Signal score">signal 4</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">RAK Innovation City (ex-RAK DAO)</span><span class="tag cat">Company Attraction</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.einnews.com/pr_news/928821793/innovation-city-ras-al-khaimah-attracts-uk-s-most-awarded-pc-manufacturer-chillblast-for-gcc-expansion" target="_blank" rel="noopener">UK PC maker Chillblast sets up GCC base in Innovation City Ras Al Khaimah for AI and gaming systems</a></h3>
+          <div class="src">EIN Presswire · with Chillblast</div>
+          <p>Chillblast's high-performance AI and gaming systems will be supported from its new regional base in Innovation City.</p>
+          <p class="angle">DMCC angle: Innovation City is converting its AI-and-gaming positioning into named company wins - DMCC also courts gaming firms.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">6 Jul<br><span class="sig hi" title="Signal score">signal 8</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">RAK Innovation City (ex-RAK DAO)</span><span class="tag cat">Product &amp; Launch</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://innovationcity.com/news/innovation-city-and-iopn-launch-the-middle-east-s-first-sovereign-ai-data-center" target="_blank" rel="noopener">Innovation City (RAK) and Siada launch the Middle East's first sovereign AI data centre with NVIDIA B200 GPUs</a></h3>
+          <div class="src">Innovation City Newsroom · with Siada (IOPn), NVIDIA</div>
+          <p>Licensed companies can rent sovereign GPU compute by the hour, reserve capacity or run fully managed environments, with data kept in the UAE.</p>
+          <p class="angle">DMCC angle: A small zone is competing on compute access, not licence price - a lever DMCC could match through partnerships.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">18 Jun<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">DIFC</span><span class="tag cat">Regulation &amp; Policy</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.difc.com/whats-on/news/difc-consultation-amended-data-protection-regulations" target="_blank" rel="noopener">DIFC launches consultation on amended Data Protection Regulations with new AI-related safeguards</a></h3>
+          <div class="src">DIFC Newsroom</div>
+          <p>Proposed amendments strengthen governance and accountability for systems that process personal data, with specific safeguards for AI-driven processing.</p>
+          <p class="angle">DMCC angle: Regulatory clarity on AI and data is becoming a selling point for AI firms choosing a free zone.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">17 Jun<br><span class="sig " title="Signal score">signal 4</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">DIFC</span><span class="tag cat">News &amp; Commentary</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.arabianbusiness.com/finance/banking/difc-warns-banks-could-lose-170bn-in-profits-by-2030-without-ai-led-transformation" target="_blank" rel="noopener">DIFC Future of Finance report: AI-driven challenger banks reshape the industry; banks risk losing USD 170bn in profits by 2030</a></h3>
+          <div class="src">Arabian Business</div>
+          <p>DIFC's research report argues banks must adopt AI-led operating models or lose up to USD 170bn in profits by 2030.</p>
+          <p class="angle">DMCC angle: DIFC pairs its AI strategy with sector research - a playbook DMCC already uses with its Future of Trade report.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">9 Jun<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">Hub71</span><span class="tag leader ">ADGM</span><span class="tag cat">Programmes &amp; Ecosystem</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.emirates247.com/business/emirati-startup-founders-unveil-ai-powered-innovations-at-hub71-impact-2026/2406" target="_blank" rel="noopener">Emirati founders unveil AI-powered solutions at Hub71 Impact 2026</a></h3>
+          <div class="src">Emirates 24|7 (WAM)</div>
+          <p>Hub71's showcase featured Emirati start-ups applying AI in marketing, healthcare and advanced manufacturing.</p>
+          <p class="angle">DMCC angle: Hub71 keeps a visible pipeline of AI founders - useful context for DMCC's start-up programmes.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">3 Jun<br><span class="sig hi" title="Signal score">signal 8</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">Hub71</span><span class="tag leader ">ADGM</span><span class="tag cat">Partnership / MoU</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.edtechinnovationhub.com/news/mastercard-lighthouse-and-hub71-open-uae-ai-startup-program" target="_blank" rel="noopener">Mastercard Lighthouse and Hub71 open UAE AI start-up programme</a></h3>
+          <div class="src">EdTech Innovation Hub · with Mastercard</div>
+          <p>A four-month programme for start-ups using AI in financial services, commerce, risk and MSME solutions, run under the Mastercard UAE AI Center of Excellence with the UAE AI Office.</p>
+          <p class="angle">DMCC angle: Global corporates are co-running AI programmes inside competitor ecosystems.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">2 Jun<br><span class="sig " title="Signal score">signal 6</span></div>
+        <div>
+          <div class="tags"><span class="tag leader ">DIFC</span><span class="tag cat">Company Attraction</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://enterpriseam.com/uae/2026/06/02/adia-backs-insurtech-sapiens-positron-ai-comes-to-difc-dp-world-invests-more-in-dominican-republic-freezone-adnoc-secures-gas-supply-from-azerbaijan/" target="_blank" rel="noopener">Positron AI opens its first office outside the US in DIFC</a></h3>
+          <div class="src">EnterpriseAM · with Positron AI</div>
+          <p>US AI-inference hardware maker Positron AI, which has raised more than USD 300m, chose DIFC for its first international office.</p>
+          <p class="angle">DMCC angle: AI infrastructure companies - not only AI software start-ups - are now being won by the financial centres.</p>
+        </div>
+      </li><li class="it">
+        <div class="date">7 May<br><span class="sig hi" title="Signal score">signal 8</span></div>
+        <div>
+          <div class="tags"><span class="tag  ">KEZAD / AD Ports</span><span class="tag cat">Partnership / MoU</span><span class="tag ver" title="Headline, date and facts checked on the source page">verified</span></div>
+          <h3><a href="https://www.kezadgroup.com/news-and-media/2026/05/07/rox-to-establish-one-of-the-middle-easts-first-advanced-ai-manufacturing-centres-in-kezads-klp-1-musaffah/" target="_blank" rel="noopener">ROX signs lease for one of the Middle East's first advanced AI manufacturing centres in KEZAD Musaffah</a></h3>
+          <div class="src">KEZAD Group Newsroom · with ROX, ADIO</div>
+          <p>A 10,000 sqm intelligent manufacturing facility starting operations in H2 2026, targeting 300,000 vehicles a year by 2030.</p>
+          <p class="angle">DMCC angle: Industrial zones are attracting 'AI manufacturing' anchors - AI is spreading beyond tech and finance zones.</p>
+        </div>
+      </li></ol>
+    <p id="empty" class="empty" hidden="">Nothing matches these filters yet. The tracker updates every morning; widen the period or clear filters.</p>
   </section>
 </main>
 
@@ -70,5 +247,6 @@
 </footer>
 <script src="data/items.js"></script>
 <script src="explore.js"></script>
-</body>
-</html>
+
+
+</body></html>
